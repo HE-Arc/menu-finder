@@ -50,7 +50,13 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
-        ]
+        ],
+	"lint": [
+	    "\"vendor/bin/phpcs\""
+	],
+	"lint-fix": [
+	    "\"vendor/bin/phpcbf\""
+	]
     },
     "config": {
         "preferred-install": "dist",
