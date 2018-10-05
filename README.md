@@ -8,7 +8,7 @@ Projet Laravel du [cours développement web](https://github.com/HE-Arc/slides-de
 $ composer install
 $ npm install
 ```
-2. Copiez le fichier ```.env.example```sous le nom ```.env```et éditez le contenu de ce dernier selon votre configuration locale (pas nécessaire si Homestead est utilisé).
+2. Copiez le fichier ```.env.example```sous le nom ```.env```et éditez le contenu de ce dernier selon votre configuration locale.
 
 ## Auteurs
 * **[Kevin Bütikofer](https://github.com/kevinbutikofer)**
