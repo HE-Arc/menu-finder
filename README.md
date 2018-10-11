@@ -9,6 +9,10 @@ $ composer install
 $ npm install
 ```
 2. Copiez le fichier ```.env.example```sous le nom ```.env```et éditez le contenu de ce dernier selon votre configuration locale.
+3. Générez une clé d'application avec artisan
+```bash
+$ php artisan key:generate
+```
 
 ## Auteurs
 * **[Kevin Bütikofer](https://github.com/kevinbutikofer)**
