@@ -1,0 +1,55 @@
+language: php
+
+php:
+- 7.1
+- 7.2
+
+dist: trusty
+
+sudo: true
+
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
+    - postgresql-10-postgis-2.4
+    # @see https://gis.stackexchange.com/questions/71302/running-create-extension-postgis-gives-error-could-not-open-extension-control-fi
+    - postgresql-10-postgis-2.4-scripts
+
+cache:
+  directories:
+  - vendor
+  - node_modules
+
+before_install:
+   # Taken from https://github.com/travis-ci/travis-ci/issues/8537 to install PostgreSQL 10
+  # Use default port
+  - sudo sed -i 's/port = 5433/port = 5432/' /etc/postgresql/10/main/postgresql.conf
+  # Use 9.6 auth config:
+  - sudo cp /etc/postgresql/{9.6,10}/main/pg_hba.conf
+  - sudo service postgresql restart
+  - composer self-update
+  - composer validate
+
+install:
+  - composer install --no-progress --no-interaction --prefer-dist --no-suggest
+  - npm install
+  - npm run prod
+
+before_script:
+- psql -U postgres -c 'CREATE DATABASE  menufinder_db;'
+- psql -U postgres -c 'CREATE EXTENSION postgis;' menufinder_db
+- cp .env.travis .env
+- php artisan key:generate
+- php artisan migrate --force
+
+script:
+- phpunit
+- composer lint
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always

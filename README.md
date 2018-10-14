@@ -1,4 +1,6 @@
 # MenuFinder
+[![Build Status](https://travis-ci.org/HE-Arc/menu-finder.svg?branch=master)](https://travis-ci.org/HE-Arc/menu-finder)
+
 Backend et API REST permettant aux restaurateurs de proposer leur menu du jour.<br>
 Projet Laravel du [cours développement web](https://github.com/HE-Arc/slides-devweb) INF3dlm. HE-Arc, 2018-2019.
 
