@@ -19,10 +19,10 @@ class CreateMenusTable extends Migration
             $table->unsignedInteger('restaurant_id');
             $table->string('name');
             $table->unsignedInteger('category_id');
-            $table->float('price', 10, 2);
-            $table->date('start');
-            $table->date('end');
-            $table->boolean('active');
+            $table->float('price', 10, 2)->nullable();
+            $table->date('start')->nullable();
+            $table->date('end')->nullable();
+            $table->boolean('active')->default(true);
 
 
         });

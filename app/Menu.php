@@ -11,6 +11,6 @@ class Menu extends Model
     'price',
     'start',
     'end',
-    'active'
+    'active',
     ];
 }

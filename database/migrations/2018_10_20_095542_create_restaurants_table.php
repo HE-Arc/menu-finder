@@ -18,16 +18,16 @@ class CreateRestaurantsTable extends Migration
             $table->timestamps();
             $table->unsignedInteger('user_id');
             $table->string('name');
-            $table->boolean('active');
-            $table->unsignedInteger('rate_sum');
-            $table->unsignedInteger('rate_nb');
-            $table->point('location');
-            $table->string('address');
-            $table->unsignedInteger('zip');
-            $table->string('city');
-            $table->string('avatar');
-            $table->string('website');
-            $table->longText('description');
+            $table->boolean('active')->default(true);
+            $table->unsignedInteger('rate_sum')->nullable();
+            $table->unsignedInteger('rate_nb')->nullable();
+            $table->point('location')->nullable();
+            $table->string('address')->nullable();
+            $table->unsignedInteger('zip')->nullable();
+            $table->string('city')->nullable();
+            $table->string('avatar')->default("default.png");
+            $table->string('website')->nullable();
+            $table->longText('description')->nullable();
         });
     }
 

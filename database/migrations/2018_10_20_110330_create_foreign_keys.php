@@ -49,7 +49,7 @@ class CreateForeignKeys extends Migration
       Schema::table('dishes', function (Blueprint $table) {
 
         $table->dropForeign(['menu_id']);
-        
+
 
       });
       Schema::table('menus', function (Blueprint $table) {

@@ -8,6 +8,6 @@ class Dish extends Model
 {
     protected $fillable = [
     'name',
-    'type'
+    'type',
     ];
 }
