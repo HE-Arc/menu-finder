@@ -18,7 +18,7 @@ class CreateDishesTable extends Migration
             $table->timestamps();
             $table->unsignedInteger('menu_id');
             $table->string('name');
-            $table->enum('type', ['starter', 'main', 'dessert']);
+            $table->enum('type', ['starter', 'main', 'dessert'])->nullable();
 
         });
     }

@@ -8,9 +8,26 @@ class Menu extends Model
 {
     protected $fillable = [
     'name',
+    'restaurant_id',
+    'category_id',
     'price',
     'start',
     'end',
     'active',
     ];
+
+    public function dishes()
+    {
+        return $this->hasMany('App\Dish');
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo('App\Restaurant');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Category');
+    }
 }

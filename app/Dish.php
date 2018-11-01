@@ -9,5 +9,11 @@ class Dish extends Model
     protected $fillable = [
     'name',
     'type',
+    'menu_id',
     ];
+
+    public function menu()
+    {
+        return $this->belongsTo('App\Menu');
+    }
 }

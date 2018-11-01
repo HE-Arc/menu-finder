@@ -12,6 +12,7 @@ class Restaurant extends Model
 
     protected $fillable = [
     'name',
+    'user_id',
     'active',
     'rate_sum',
     'rate_nb',
@@ -43,5 +44,15 @@ class Restaurant extends Model
         'lat' => $lat,
         'radius' => $radius * 1000,
         ])->get();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function menus()
+    {
+        return $this->hasMany('App\Menu');
     }
 }
