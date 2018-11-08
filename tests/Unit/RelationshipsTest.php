@@ -9,12 +9,12 @@ use App\Menu;
 use App\Dish;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RelationshipsTest extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      *
@@ -24,50 +24,52 @@ class RelationshipsTest extends TestCase
     {
         $this->assertTrue(true);
     }
+
+    /**
+     * Tests that Eloquent relationships works as expected.
+     *
+     * @return void
+     */
     public function testModels()
     {
-      $categoryTest = Category::create([
-        'name'=>"test",
-      ]);
-      $userTest = User::create([
-        'name'=>"userTest",
-        'password'=>"1234",
-        'email'=>"foo2@test.com"
+        // Set up dummy data
+        $categoryTest = Category::create([
+            'name' => 'test',
+        ]);
 
-      ]);
-      $restaurantTest = Restaurant::create([
-        'name'=>"restaurantTest",
-        'user_id'=>$userTest->id,
+        $userTest = User::create([
+            'name' => 'userTest',
+            'password' => '1234',
+            'email' => 'foo@test.com',
+        ]);
 
-      ]);
-      $menuTest = Menu::create([
-        'name'=>"menuTest",
-        'restaurant_id'=>$restaurantTest->id,
-        'category_id'=>$categoryTest->id,
+        $restaurantTest = Restaurant::create([
+            'name' => 'restaurantTest',
+            'user_id' => $userTest->id,
+        ]);
 
-      ]);
-      $dishTest = Dish::create([
-        'name'=>"dishTest",
-        'menu_id'=>$menuTest->id,
+        $menuTest = Menu::create([
+            'name' => 'menuTest',
+            'restaurant_id' => $restaurantTest->id,
+            'category_id' => $categoryTest->id,
 
-      ]);
+        ]);
 
-      $this->assertTrue($userTest->restaurants->contains($restaurantTest));
-      $this->assertTrue($restaurantTest->menus->contains($menuTest));
-      $this->assertTrue($categoryTest->menus->contains($menuTest));
-      $this->assertTrue($menuTest->dishes->contains($dishTest));
+        $dishTest = Dish::create([
+            'name' => 'dishTest',
+            'menu_id' => $menuTest->id,
+        ]);
 
-      $this->assertTrue($restaurantTest->user->is($userTest));
-      $this->assertTrue($menuTest->restaurant->is($restaurantTest));
-      $this->assertTrue($menuTest->category->is($categoryTest));
-      $this->assertTrue($dishTest->menu->is($menuTest));
+        // Test one-to-many relations
+        $this->assertTrue($userTest->restaurants->contains($restaurantTest));
+        $this->assertTrue($restaurantTest->menus->contains($menuTest));
+        $this->assertTrue($categoryTest->menus->contains($menuTest));
+        $this->assertTrue($menuTest->dishes->contains($dishTest));
 
-      /*$foo2 = Menu::create([
-        'name'=>"menuTest",
-
-      ]);*/
-
-
+        // Test inverse one-to-many relations
+        $this->assertTrue($restaurantTest->user->is($userTest));
+        $this->assertTrue($menuTest->restaurant->is($restaurantTest));
+        $this->assertTrue($menuTest->category->is($categoryTest));
+        $this->assertTrue($dishTest->menu->is($menuTest));
     }
-
 }

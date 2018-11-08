@@ -14,14 +14,12 @@ class CreateForeignKeys extends Migration
     public function up()
     {
         Schema::table('dishes', function (Blueprint $table) {
-
           $table->foreign('menu_id')
             ->references('id')->on('menus')
             ->onDelete('cascade');
-
         });
-        Schema::table('menus', function (Blueprint $table) {
 
+        Schema::table('menus', function (Blueprint $table) {
             $table->foreign('restaurant_id')
               ->references('id')->on('restaurants')
               ->onDelete('cascade');
@@ -29,14 +27,12 @@ class CreateForeignKeys extends Migration
               ->references('id')->on('categories')
               ->onDelete('cascade');
         });
-        Schema::table('restaurants', function (Blueprint $table) {
 
+        Schema::table('restaurants', function (Blueprint $table) {
             $table->foreign('user_id')
               ->references('id')->on('users')
               ->onDelete('cascade');
-
         });
-
     }
 
     /**
@@ -47,22 +43,16 @@ class CreateForeignKeys extends Migration
     public function down()
     {
       Schema::table('dishes', function (Blueprint $table) {
-
         $table->dropForeign(['menu_id']);
-
-
       });
-      Schema::table('menus', function (Blueprint $table) {
 
+      Schema::table('menus', function (Blueprint $table) {
           $table->dropForeign(['restaurant_id']);
           $table->dropForeign(['category_id']);
-
       });
+
       Schema::table('restaurants', function (Blueprint $table) {
-
           $table->dropForeign(['user_id']);
-
-
       });
     }
 }

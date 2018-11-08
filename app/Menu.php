@@ -6,14 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-    'name',
-    'restaurant_id',
-    'category_id',
-    'price',
-    'start',
-    'end',
-    'active',
+        'name',
+        'restaurant_id',
+        'category_id',
+        'price',
+        'start',
+        'end',
+        'active',
     ];
 
     public function dishes()

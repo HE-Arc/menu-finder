@@ -6,6 +6,7 @@
     <file>app/</file>
     <file>resources/views/</file>
     <file>routes/</file>
+    <file>tests/</file>
 
     <!-- Scan only PHP files -->
     <arg name="extensions" value="php"/>

@@ -19,7 +19,6 @@ class CreateDishesTable extends Migration
             $table->unsignedInteger('menu_id');
             $table->string('name');
             $table->enum('type', ['starter', 'main', 'dessert'])->nullable();
-
         });
     }
 

@@ -23,8 +23,6 @@ class CreateMenusTable extends Migration
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->boolean('active')->default(true);
-
-
         });
     }
 
