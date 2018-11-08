@@ -49,7 +49,7 @@ class Restaurant extends Model
      */
     public static function allWithinRadius($lat, $lng, $radius)
     {
-        $query = 'ST_DWithin(position, ST_Point(:lng, :lat)::geography, :radius)';
+        $query = 'ST_DWithin(location, ST_Point(:lng, :lat)::geography, :radius)';
         return Restaurant::whereRaw($query, [
             'lng' => $lng,
             'lat' => $lat,
