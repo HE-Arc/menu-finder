@@ -1,0 +1,54 @@
+.menu-create {
+    .mealInput
+    {
+            padding-left: 0;    
+            div
+            {
+                input
+                {
+                    width : 90%;
+                    display: inline-block;
+                }
+                button
+                {
+                    vertical-align: inherit;
+                }
+            }          
+    }
+    ul
+    {
+        height: 100px; 
+        overflow: auto;
+        width: 40%; 
+        list-style-type: none; 
+        margin: 0; 
+        padding: 0; 
+        overflow-x: hidden;
+    }
+    li 
+    { 
+        margin: 0;
+        padding: 0;         
+        label{
+            display: block;
+            background-color: #fff; 
+            margin: 0; 
+            padding: 0; 
+            width: 100%;
+
+            &:hover {
+                background-color: #3490dc; 
+                color: #000;
+            }
+        }
+    }
+    input[type='checkbox']
+    { 
+        margin-left: 10px;
+        margin-right: 10px;
+    }      
+    #field 
+    {
+          margin-bottom:20px;
+    }
+}
