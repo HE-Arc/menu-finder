@@ -30,9 +30,8 @@ let makeInputDynamic = ($container) => {
     };
 
     $addBtn.one('click', onAddBtnClick);
-    
 };
 
-    makeInputDynamic($('#starter-container'));
-    makeInputDynamic($('#dish-container'));
-    makeInputDynamic($('#dessert-container'));
+makeInputDynamic($('#starter-container'));
+makeInputDynamic($('#dish-container'));
+makeInputDynamic($('#dessert-container'));

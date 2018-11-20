@@ -10490,40 +10490,11 @@ a.text-dark:focus {
   vertical-align: inherit;
 }
 
-.menu-create ul {
-  height: 100px;
-  overflow: auto;
-  width: 40%;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+.menu-create .form-check {
+  padding-top: calc(0.5rem + 1px);
 }
 
-.menu-create li {
-  margin: 0;
-  padding: 0;
-}
-
-.menu-create li label {
-  display: block;
-  background-color: #fff;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.menu-create li label:hover {
-  background-color: #3490dc;
-  color: #000;
-}
-
-.menu-create input[type='checkbox'] {
-  margin-left: 10px;
+.menu-create .form-check input[type='checkbox'] {
   margin-right: 10px;
-}
-
-.menu-create #field {
-  margin-bottom: 20px;
 }
 

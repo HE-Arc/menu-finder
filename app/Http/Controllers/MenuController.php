@@ -49,6 +49,7 @@ class MenuController extends Controller
             'categories' => 'required',
             'price' => 'required',
         ]);
+        var_dump($request->input());
     }
 
     private function filterArrayNullValue($value)
