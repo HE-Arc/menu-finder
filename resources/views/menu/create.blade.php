@@ -1,23 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{ 'Ajouter un menu' }}</h1>
+    <h1>{{ 'Add a dish' }}</h1>
     <div class="menu-create">
         {{-- @TODO Maybe we could use Form model --}}
         {{-- @see https://laravelcollective.com/docs/5.4/html#form-model-binding --}}
-        {!! Form::open(['url' => route('menus.store'), 'method' => 'post']) !!}
+
+        {!! Form::model($menu, ['action' => 'MenuController@store']) !!}
+        @if($errors->has('errorInfo'))
+            <div class="alert alert-warning">
+                {{$errors->first('errorInfo')}}
+            </div>
+        @endif
         <div class="form-group row">
-            {!! Form::label('name', 'Nom', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::label('restaurant', 'Restaurant', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::select('restaurant', $items) !!}
+        </div>
+
+        <div class="form-group row">
+            {!! Form::label('name', 'Title', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             {!! Form::text('name', '', ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
 
         <div class="form-group row">
-            {!! Form::label('date', 'Date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::date('date', \Carbon\Carbon::now(), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
+            {!! Form::label('start', 'Start date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::date('start', \Carbon\Carbon::now(), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
+        </div>
+        <div class="form-group row">
+            {!! Form::label('end', 'End date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::date('end', \Carbon\Carbon::now(), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
 
         <div id="starter-container" class="form-group row">
-            {!! Form::label('starter1', 'Entrée(s)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::label('starter1', 'Starter(s)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             <div class='col-sm-10 mealInput'>
                 <div id="starter-div1">
                     <input autocomplete="off" class="input form-control" id="starter1" name="starter[]" type="text"
@@ -27,8 +42,9 @@
             </div>
         </div>
 
+
         <div id="dish-container" class="form-group row">
-            {!! Form::label('dish1', 'Plats(s)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::label('dish1', 'Main(s)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             <div class='col-sm-10 mealInput'>
                 <div id="dish-div1">
                     <input autocomplete="off" class="input form-control @if($errors->has('dish')) is-invalid @endif"
@@ -55,7 +71,7 @@
         </div>
 
         <div class="categories-container row">
-            {!! Form::label('categories', 'Categorie(s)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::label('categories', 'Category(es)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             {{-- @TODO Use categories model--}}
             <div class="form-check">
                 {!! Form::checkbox('categories[]', '1', ['class' => 'form-check-input']) !!}
@@ -76,11 +92,11 @@
         </div>
 
         <div class="form-group row">
-            {!! Form::label('price', 'Prix', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            {!! Form::label('price', 'Price ', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             {!! Form::number('price', '', ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
 
-        {!! Form::submit('Envoyer', ['class' => 'btn btn-primary', 'id' => 'send_button']) !!}
+        {!! Form::submit('Submit', ['class' => 'btn btn-primary', 'id' => 'send_button']) !!}
         {!! Form::close() !!}
     </div>
 @endsection

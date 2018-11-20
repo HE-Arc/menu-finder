@@ -2,5 +2,10 @@
 
 @section('content')
 <h1>Menu View</h1>
-<h2>{{ $toto }}</h2>
+@if(session('succesMessage'))
+    <div class="alert alert-success">
+        {{session('succesMessage')}}
+    </div>
+    </div>
+@endif
 @endsection
