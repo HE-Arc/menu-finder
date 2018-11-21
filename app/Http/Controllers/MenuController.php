@@ -21,8 +21,11 @@ class MenuController extends Controller
      */
     public function index()
     {
+        $currentUser = \Auth::user();
+        $restaurants = $currentUser->restaurants;
+        $menus = $restaurants[0]->menus;
         return view('menu.index')
-            ->with(['toto' => 'salut tlm']);
+            ->with(['menus' => $menus]);
     }
 
     /**
@@ -36,14 +39,6 @@ class MenuController extends Controller
         $currentUser = \Auth::user();
         $restaurants = $currentUser->restaurants;
         $items = $restaurants->pluck('name', 'id')->toArray();
-/*
-        $starters = $request->old('starter1');
-        $main = $request->old('dish');
-        $dessert = $request->old('dessert1');
-        var_dump($starters);
-        var_dump($main);
-        var_dump($dessert);*/
-
 
         return view('menu.create')
             ->with(['menu' => $menu,

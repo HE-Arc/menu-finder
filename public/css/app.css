@@ -10498,3 +10498,44 @@ a.text-dark:focus {
   margin-right: 10px;
 }
 
+.menu-index .alert .right-Link {
+  float: right;
+  padding: 0.5rem 0.5rem;
+  font-size: large;
+}
+
+.menu-index .alert h3 {
+  display: inline-block;
+}
+
+.menu-index .span-date {
+  float: right;
+}
+
+.menu-index .btn-block {
+  text-align: left;
+}
+
+.menu-index .card-header {
+  cursor: pointer;
+}
+
+.menu-index .btn {
+  text-align: left;
+}
+
+.menu-index .card h5 {
+  padding-top: 10px;
+}
+
+.menu-index .card .list-group-item {
+  padding: 5px;
+}
+
+.menu-index .card .right-Link {
+  float: right;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: large;
+}
+

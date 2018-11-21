@@ -21,3 +21,44 @@
     }
   }
 }
+.menu-index
+{
+  .alert{
+    .right-Link{
+      float: right;
+      padding: 0.5rem 0.5rem;
+      font-size: large;
+    }
+    h3{
+      display: inline-block;    }
+  }
+
+
+  .span-date{
+    float: right;
+  }
+  .btn-block{
+    text-align: left;
+  }
+  .card-header  {
+    cursor: pointer;
+  }
+  .btn{
+    text-align: left;
+  }
+  .card{
+    h5{
+      padding-top: 10px;
+    }
+    .list-group-item
+    {
+      padding: 5px;
+    }
+    .right-Link{
+      float: right;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: large;
+    }
+  }
+}
