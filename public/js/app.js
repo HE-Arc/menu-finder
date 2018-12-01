@@ -35943,22 +35943,33 @@ module.exports = function spread(callback) {
 /***/ (function(module, exports) {
 
 var makeInputDynamic = function makeInputDynamic($container) {
-    var $input = $container.find("input");
+    var $input = $container.find("input").last();
     var $div = $container.find("div").find("div");
     var $inputClone = $input.clone();
     var $div2 = $div.parent();
-    var $addBtn = $container.find(".add-more");
-    var $removeBtn = $('<button id="remove" class="btn btn-danger remove-me btn-primary" >-</button></div>');
+    var $addBtn = $container.find(".add-more").last();
+    var $removeButtons = $container.find('.remove-me');
+    if ($removeButtons.length > 0) {
+        $removeButtons.each(function () {
+            var _this = this;
+
+            $(this).click(function (e) {
+                e.preventDefault();
+                $(_this).parent().remove();
+            });
+        });
+    }
+    var $removeBtn = '<button id="remove" class="btn btn-danger remove-me btn-primary" >-</button></div>';
     var inputCount = 1;
 
     var onAddBtnClick = function onAddBtnClick(e) {
         inputCount++;
         var $newInput = $inputClone.clone();
-        var $newRemoveBtn = $removeBtn.clone();
+        var $newRemoveBtn = $($removeBtn).clone();
         var $divId = $div.attr("id");
         var $newDiv = $('<div></div>');
         $newDiv.attr("id", $divId);
-        $newInput.data('');
+        $newInput.val('');
 
         $addBtn.replaceWith($newRemoveBtn);
         $newDiv.append($newInput);

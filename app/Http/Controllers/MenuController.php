@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dish;
 use App\Menu;
-use App\Restaurant;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class MenuController extends Controller
 {
@@ -38,17 +36,18 @@ class MenuController extends Controller
         $menu = new Menu();
         $currentUser = \Auth::user();
         $restaurants = $currentUser->restaurants;
-        $items = $restaurants->pluck('name', 'id')->toArray();
+        $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
 
         return view('menu.create')
             ->with(['menu' => $menu,
-                    'items' => $items]);
+                    'items' => $restaurantItems]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param if updating the id of the menu
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -68,55 +67,67 @@ class MenuController extends Controller
             'categories' => 'required',
             'price' => 'required',
         ]);
-        try {
-            $menu = Menu::create([
-                'name' => $request->name,
-                'price' => $request->price,
-                'start' => $request->start,
-                'end' => $request->end,
-                'restaurant_id' => $request->restaurant,
-                'category_id' => 1,
-                'active' => true,
+            $menu = null;
+            try {
+                $menu = Menu::create([
+                    'name' => $request->name,
+                    'price' => $request->price,
+                    'start' => $request->start,
+                    'end' => $request->end,
+                    'restaurant_id' => $request->restaurant,
+                    'category_id' => 1,
+                    'active' => true,
+                ]);
+
+                $this->createDish($request, $menu->id);
+
+                $message = 'The menu ' . $menu->name . ' has been created!';
+                return redirect()
+                    ->action('MenuController@index')
+                    ->with(['succesMessage' => $message,
+                    ]);
+            } catch (\Illuminate\Database\QueryException $exception) {
+                if ($menu != null) {
+                    Dish::where('menu_id', $menu->id)->delete();
+                    Menu::find($menu->id)->delete();
+                }
+                //$errorMessage = $exception->getMessage();
+                $errorMessage = 'There was an error please try again';
+                return redirect()
+                    ->action('MenuController@create')
+                    ->withInput()
+                    ->withErrors(['errorInfo' => $errorMessage]);
+            }
+
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     */
+    public function createDish(Request $request, $menuId): void
+    {
+        foreach ($request['dish'] as $key => $val) {
+            Dish::create([
+                'name' => $val,
+                'type' => 'main',
+                'menu_id' => $menuId,
             ]);
-
-            foreach ($request['dish'] as $key => $val) {
-                Dish::create([
-                    'name' => $val,
-                    'type' => 'main',
-                    'menu_id' => $menu->id  ,
-                ]);
-            }
-            foreach ($request['starter'] as $key => $val) {
-                Dish::create([
-                    'name' => $val,
-                    'type' => 'starter',
-                    'menu_id' => $menu->id,
-                ]);
-            }
-            foreach ($request['dessert'] as $key => $val) {
-                Dish::create([
-                    'name' => $val,
-                    'type' => 'dessert',
-                    'menu_id' => $menu->id,
-                ]);
-            }
-            $message = 'The menu '. $menu->name . ' has been created!';
-            return redirect()
-                ->action('MenuController@index')
-                ->with(['succesMessage' => $message,
-                ]);
         }
-        catch (\Illuminate\Database\QueryException $exception)
-        {
-            $errorInfo = $exception->getMessage();
-            $errorMessage = 'There was an error please try again';
-            return redirect()
-                ->action('MenuController@create')
-                ->withInput()
-                ->withErrors(['errorInfo' => $errorMessage]);
-            //TODOS use old value for dishes
+        foreach ($request['starter'] as $key => $val) {
+            Dish::create([
+                'name' => $val,
+                'type' => 'starter',
+                'menu_id' => $menuId,
+            ]);
         }
-
+        foreach ($request['dessert'] as $key => $val) {
+            Dish::create([
+                'name' => $val,
+                'type' => 'dessert',
+                'menu_id' => $menuId,
+            ]);
+        }
     }
 
     private function filterArrayNullValue($value)
@@ -143,7 +154,14 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        //
+        $menu = \App\Menu::find($id);
+        $currentUser = \Auth::user();
+        $restaurants = $currentUser->restaurants;
+        $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
+
+        return view('menu.create')
+            ->with(['menu' => $menu,
+                'items' => $restaurantItems]);
     }
 
     /**
@@ -155,7 +173,55 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->merge([
+            'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
+            'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
+            'dessert' => array_filter($request->input('dessert'), array($this, 'filterArrayNullValue')),
+        ]);
+
+        $this->validate($request, [
+            'restaurant' => 'required',
+            'name' => 'required|max:255',
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'dish' => 'required|array|min:1',
+            'categories' => 'required',
+            'price' => 'required',
+        ]);
+
+        try {
+            //Now we delete every dish from the menu an create the new one
+            //Maybe check the one already existent to reduce call to db
+            $dishesDb = Dish::where('menu_id', $id)->delete();
+
+            $menu = Menu::find($id);
+            $menu->update([
+                'name' => $request->name,
+                'price' => $request->price,
+                'start' => $request->start,
+                'end' => $request->end,
+                'restaurant_id' => $request->restaurant,
+                'category_id' => 1,
+            ]);
+
+            $this->createDish($request, $id);
+
+            //$dishes = $request['starter']->concat($request['dish'])->concat($request['dessert']);
+            //$idxToDel = $this->checkIfStillPresent($dishes, $dishesDb);
+
+            $message = 'The menu ' . $menu->name . ' has been updated!';
+            return redirect()
+                ->action('MenuController@index')
+                ->with(['succesMessage' => $message,
+                ]);
+        } catch (\Illuminate\Database\QueryException $exception) {
+        //$errorMessage = $exception->getMessage();
+        $errorMessage = 'There was an error please try again';
+        return redirect()
+            ->action('MenuController@create')
+            ->withInput()
+            ->withErrors(['errorInfo' => $errorMessage]);
+        }
     }
 
     /**
@@ -166,6 +232,36 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            $menu = Menu::find($id);
+            $message = 'The menu ' . $menu->name . ' has been deleted!';
+            $menu->delete();
+
+            return redirect()
+                ->action('MenuController@index')
+                ->with(['succesMessage' => $message,
+                ]);
+        }
+        catch (\Illuminate\Database\QueryException $exception) {
+            //$errorMessage = $exception->getMessage();
+            $errorMessage = 'There was an error please try again';
+            return redirect()
+                ->action('MenuController@index')
+                ->withInput()
+                ->withErrors(['errorInfo' => $errorMessage]);
+        }
+
+    }
+    private function checkIfStillPresent($dishes, $dishDb)
+    {
+            foreach ($dishes as $key => $dish)
+            {
+                if($dishDb->name == $dishes)
+                {
+                    return true;
+                }
+            }
+            return false;
     }
 }
