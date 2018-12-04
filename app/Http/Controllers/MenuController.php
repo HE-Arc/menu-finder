@@ -61,8 +61,8 @@ class MenuController extends Controller
         $this->validate($request, [
             'restaurant' => 'required',
             'name' => 'required|max:255',
-            'start' => 'required|date',
-            'end' => 'required|date',
+            'start' => 'required|date|after:yesterday',
+            'end' => 'required|date|after_or_equal:start',
             'dish' => 'required|array|min:1',
             'categories' => 'required',
             'price' => 'required',
@@ -182,8 +182,8 @@ class MenuController extends Controller
         $this->validate($request, [
             'restaurant' => 'required',
             'name' => 'required|max:255',
-            'start' => 'required|date',
-            'end' => 'required|date',
+            'start' => 'required|date|after:yesterday',
+            'end' => 'required|date|after_or_equal:start',
             'dish' => 'required|array|min:1',
             'categories' => 'required',
             'price' => 'required',
@@ -192,7 +192,7 @@ class MenuController extends Controller
         try {
             //Now we delete every dish from the menu an create the new one
             //Maybe check the one already existent to reduce call to db
-            $dishesDb = Dish::where('menu_id', $id)->delete();
+            Dish::where('menu_id', $id)->delete();
 
             $menu = Menu::find($id);
             $menu->update([
@@ -206,9 +206,6 @@ class MenuController extends Controller
 
             $this->createDish($request, $id);
 
-            //$dishes = $request['starter']->concat($request['dish'])->concat($request['dessert']);
-            //$idxToDel = $this->checkIfStillPresent($dishes, $dishesDb);
-
             $message = 'The menu ' . $menu->name . ' has been updated!';
             return redirect()
                 ->action('MenuController@index')
@@ -218,7 +215,7 @@ class MenuController extends Controller
         //$errorMessage = $exception->getMessage();
         $errorMessage = 'There was an error please try again';
         return redirect()
-            ->action('MenuController@create')
+            ->action('MenuController@update')
             ->withInput()
             ->withErrors(['errorInfo' => $errorMessage]);
         }
@@ -237,6 +234,8 @@ class MenuController extends Controller
             $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
             $menu->delete();
+            //maybe add foreign key constraints or model event
+            Dish::where('menu_id', $id)->delete();
 
             return redirect()
                 ->action('MenuController@index')
@@ -252,16 +251,5 @@ class MenuController extends Controller
                 ->withErrors(['errorInfo' => $errorMessage]);
         }
 
-    }
-    private function checkIfStillPresent($dishes, $dishDb)
-    {
-            foreach ($dishes as $key => $dish)
-            {
-                if($dishDb->name == $dishes)
-                {
-                    return true;
-                }
-            }
-            return false;
     }
 }

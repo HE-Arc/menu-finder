@@ -5,9 +5,9 @@
         $old = old('dish');
         if(isset($old))
         {
-            $menusByType['starter'] = old('starter');
-            $menusByType['main'] = old('dish');
-            $menusByType['dessert'] = old('dessert');
+            $menusByType['starter'] = old('starter') != null ? old('starter') : [""];
+            $menusByType['main'] = old('dish') != null ? old('dish') : [""];
+            $menusByType['dessert'] = old('dessert') != null ? old('dessert') : [""];
         }
         else
         {
@@ -15,7 +15,11 @@
         }
 
     @endphp
+    @foreach ($errors->all() as $error)
+        <div class="alert alert-danger">{{ $error }}</div>
+    @endforeach
     <h1>{{ 'Add a dish' }}</h1>
+
     <div class="menu-create">
         {{-- @TODO Maybe we could use Form model --}}
         {{-- @see https://laravelcollective.com/docs/5.4/html#form-model-binding --}}
@@ -39,13 +43,17 @@
             {!! Form::text('name', old('name'), ['class' => 'form-control col-sm-10']) !!}
         </div>
 
+        @php
+            $startDate = isset($menu) && $menu->start ? date($menu->start) : \Carbon\Carbon::now();
+            $endDate = isset($menu) && $menu->end ? date($menu->end) : \Carbon\Carbon::now();
+        @endphp
         <div class="form-group row">
             {!! Form::label('start', 'Start date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::date('start', old('start', \Carbon\Carbon::now()), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
+            {!! Form::date('start', $startDate, ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
         <div class="form-group row">
             {!! Form::label('end', 'End date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::date('end', old('end', \Carbon\Carbon::now()), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
+            {!! Form::date('end', $endDate, ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
 
         {{--Starters--}}
@@ -82,7 +90,7 @@
         @if(isset($menusByType['main']))
             @foreach($menusByType['main'] as $key => $mainDish)
                         <div id="dish-div1">
-                            <input autocomplete="off" value="@if(is_object($mainDish)) {{$mainDish->name}} @else {{$mainDish}} @endif" class="input form-control @if($errors->has('dish')) is-invalid @endif"
+                            <input required autocomplete="off" value="@if(is_object($mainDish)) {{$mainDish->name}} @else {{$mainDish}} @endif" class="input form-control @if($errors->has('dish')) is-invalid @endif"
                                    id="dish1" name="dish[]" type="text" placeholder="Type something"/>
                             @if ($loop->last)
                                 <button class="btn add-more" type="button">+</button>

@@ -35970,6 +35970,7 @@ var makeInputDynamic = function makeInputDynamic($container) {
         var $newDiv = $('<div></div>');
         $newDiv.attr("id", $divId);
         $newInput.val('');
+        $newInput.removeAttr('required');
 
         $addBtn.replaceWith($newRemoveBtn);
         $newDiv.append($newInput);
