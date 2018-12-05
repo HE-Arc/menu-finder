@@ -21,8 +21,6 @@
     <h1>{{ 'Add a dish' }}</h1>
 
     <div class="menu-create">
-        {{-- @TODO Maybe we could use Form model --}}
-        {{-- @see https://laravelcollective.com/docs/5.4/html#form-model-binding --}}
         @if(isset($menu->id))
             {!! Form::model($menu, ['method' => 'PATCH', 'route' => ['menus.update', $menu->id]]) !!}
         @else
@@ -35,7 +33,7 @@
         @endif
         <div class="form-group row">
             {!! Form::label('restaurant', 'Restaurant', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::select('restaurant', $items) !!}
+            {!! Form::select('restaurant', $items, null, ['class' => 'form-control col-sm-10']) !!}
         </div>
 
         <div class="form-group row">
@@ -66,9 +64,9 @@
                             <input autocomplete="off" value="@if(is_object($starterDish)) {{$starterDish->name }} @else {{$starterDish}} @endif" class="input form-control" id="starter1" name="starter[]" type="text"
                                    placeholder="Type something"/>
                             @if ($loop->last)
-                                <button class="btn add-more" type="button">+</button>
+                                <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                             @else
-                                <button id="remove" class="btn btn-danger remove-me btn-primary" type="button">-</button>
+                                <button id="remove" class="btn btn-danger remove-me plusMinusBtn" type="button">-</button>
                             @endif
                         </div>
 
@@ -77,7 +75,7 @@
                         <div id="starter-div1">
                             <input autocomplete="off" value="" class="input form-control" id="starter1" name="starter[]" type="text"
                                    placeholder="Type something"/>
-                            <button class="btn add-more" type="button">+</button>
+                            <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                         </div>
         @endif
             </div>
@@ -93,9 +91,9 @@
                             <input required autocomplete="off" value="@if(is_object($mainDish)) {{$mainDish->name}} @else {{$mainDish}} @endif" class="input form-control @if($errors->has('dish')) is-invalid @endif"
                                    id="dish1" name="dish[]" type="text" placeholder="Type something"/>
                             @if ($loop->last)
-                                <button class="btn add-more" type="button">+</button>
+                                <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                             @else
-                                <button id="remove" class="btn btn-danger remove-me btn-primary" type="button">-</button>
+                                <button id="remove" class="btn btn-danger remove-me plusMinusBtn" type="button">-</button>
                             @endif
                             @if($errors->has('dish'))
                                 <div class="invalid-feedback">
@@ -108,7 +106,7 @@
                     <div id="dish-div1">
                         <input autocomplete="off" class="input form-control @if($errors->has('dish')) is-invalid @endif"
                                id="dish1" name="dish[]" type="text" placeholder="Type something"/>
-                        <button class="btn add-more" type="button">+</button>
+                        <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                         @if($errors->has('dish'))
                             <div class="invalid-feedback">
                                 {{$errors->first('dish')}}
@@ -130,9 +128,9 @@
                         <input autocomplete="off" value="@if(is_object($dessertDish)) {{$dessertDish->name }} @else {{$dessertDish}} @endif" class="input form-control" id="dessert1" name="dessert[]" type="text"
                                placeholder="Type something"/>
                         @if ($loop->last)
-                            <button class="btn add-more" type="button">+</button>
+                            <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                         @else
-                            <button id="remove" class="btn btn-danger remove-me btn-primary" type="button">-</button>
+                            <button id="remove" class="btn btn-danger remove-me plusMinusBtn" type="button">-</button>
                         @endif
                     </div>
             @endforeach
@@ -140,7 +138,7 @@
                     <div id="dessert-div1">
                         <input autocomplete="off" class="input form-control" id="dessert1" name="dessert[]" type="text"
                                placeholder="Type something"/>
-                        <button class="btn add-more" type="button">+</button>
+                        <button class="btn add-more plusMinusBtn btn-success" type="button">+</button>
                     </div>
         @endif
             </div>
@@ -174,9 +172,9 @@
             {!! Form::number('price', old('price'), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
         </div>
         @if(isset($menu->id))
-            {!! Form::submit('Update', ['class' => 'btn btn-primary', 'id' => 'send_button']) !!}
+            {!! Form::submit('Update', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
         @else
-            {!! Form::submit('Submit', ['class' => 'btn btn-primary', 'id' => 'send_button']) !!}
+            {!! Form::submit('Submit', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
         @endif
         {!! Form::close() !!}
     </div>

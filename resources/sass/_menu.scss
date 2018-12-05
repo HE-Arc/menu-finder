@@ -1,4 +1,13 @@
 .menu-create {
+  .plusMinusBtn  {
+    font-family: "Lucida Console", Monaco, monospace;
+  }
+  .form-control{
+    height: auto;
+  }
+  .btnSubmit{
+    float : right;
+  }
   .mealInput {
     padding-left: 0;
 
@@ -6,6 +15,7 @@
       input {
         width: 90%;
         display: inline-block;
+        margin-bottom: 5px;
       }
       button {
         vertical-align: inherit;

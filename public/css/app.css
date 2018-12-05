@@ -10477,6 +10477,18 @@ a.text-dark:focus {
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.menu-create .plusMinusBtn {
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+.menu-create .form-control {
+  height: auto;
+}
+
+.menu-create .btnSubmit {
+  float: right;
+}
+
 .menu-create .mealInput {
   padding-left: 0;
 }
@@ -10484,6 +10496,7 @@ a.text-dark:focus {
 .menu-create .mealInput div input {
   width: 90%;
   display: inline-block;
+  margin-bottom: 5px;
 }
 
 .menu-create .mealInput div button {

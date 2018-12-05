@@ -13,7 +13,7 @@ let makeInputDynamic = ($container) => {
             });
         });
     }
-    let $removeBtn = '<button id="remove" class="btn btn-danger remove-me btn-primary" >-</button></div>';
+    let $removeBtn = '<button id="remove" class="btn btn-danger remove-me plusMinusBtn" >-</button></div>';
     let inputCount = 1;
 
     let onAddBtnClick = e =>{
@@ -28,6 +28,7 @@ let makeInputDynamic = ($container) => {
 
         $addBtn.replaceWith($newRemoveBtn);
         $newDiv.append($newInput);
+        $newDiv.append("\n");
         $addBtn.appendTo($newDiv);
 
         $newRemoveBtn.click((e) => {            

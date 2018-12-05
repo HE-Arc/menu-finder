@@ -35959,7 +35959,7 @@ var makeInputDynamic = function makeInputDynamic($container) {
             });
         });
     }
-    var $removeBtn = '<button id="remove" class="btn btn-danger remove-me btn-primary" >-</button></div>';
+    var $removeBtn = '<button id="remove" class="btn btn-danger remove-me plusMinusBtn" >-</button></div>';
     var inputCount = 1;
 
     var onAddBtnClick = function onAddBtnClick(e) {
@@ -35974,6 +35974,7 @@ var makeInputDynamic = function makeInputDynamic($container) {
 
         $addBtn.replaceWith($newRemoveBtn);
         $newDiv.append($newInput);
+        $newDiv.append("\n");
         $addBtn.appendTo($newDiv);
 
         $newRemoveBtn.click(function (e) {
