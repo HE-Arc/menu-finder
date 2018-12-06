@@ -42,6 +42,9 @@ let makeInputDynamic = ($container) => {
 
     $addBtn.one('click', onAddBtnClick);
 };
+$(document).ready(() => {
+    $('select.select-picker').selectpicker();
+});
 
 makeInputDynamic($('#starter-container'));
 makeInputDynamic($('#dish-container'));

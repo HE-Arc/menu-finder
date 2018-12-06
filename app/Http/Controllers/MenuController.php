@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Dish;
 use App\Menu;
 use Illuminate\Http\Request;
@@ -34,13 +35,15 @@ class MenuController extends Controller
     public function create()
     {
         $menu = new Menu();
+        $categories = Category::all();
         $currentUser = \Auth::user();
         $restaurants = $currentUser->restaurants;
         $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
 
         return view('menu.create')
             ->with(['menu' => $menu,
-                    'items' => $restaurantItems]);
+                    'items' => $restaurantItems,
+                    'categories' => $categories]);
     }
 
     /**
@@ -52,6 +55,7 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
+        var_dump($request);
         $request->merge([
             'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
@@ -64,7 +68,7 @@ class MenuController extends Controller
             'start' => 'required|date|after:yesterday',
             'end' => 'required|date|after_or_equal:start',
             'dish' => 'required|array|min:1',
-            'categories' => 'required',
+            'categories' => 'required|array|min:1',
             'price' => 'required',
         ]);
             $menu = null;
@@ -155,13 +159,17 @@ class MenuController extends Controller
     public function edit($id)
     {
         $menu = \App\Menu::find($id);
+        $categories = Category::all();
+        $selectedCategories = [$menu->category]; //$menu->categories();
         $currentUser = \Auth::user();
         $restaurants = $currentUser->restaurants;
         $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
 
         return view('menu.create')
             ->with(['menu' => $menu,
-                'items' => $restaurantItems]);
+                'items' => $restaurantItems,
+                'categories' => $categories,
+                'selectedCategories' => $selectedCategories]);
     }
 
     /**

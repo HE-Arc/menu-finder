@@ -8,12 +8,12 @@
             $menusByType['starter'] = old('starter') != null ? old('starter') : [""];
             $menusByType['main'] = old('dish') != null ? old('dish') : [""];
             $menusByType['dessert'] = old('dessert') != null ? old('dessert') : [""];
+            $selectedCategoriesName = old('categories') != null ? old('starter') : [""];
         }
         else
         {
             $menusByType  = $menu->all_dishes;
         }
-
     @endphp
     @foreach ($errors->all() as $error)
         <div class="alert alert-danger">{{ $error }}</div>
@@ -147,24 +147,17 @@
 
 
         <div class="categories-container row">
-            {!! Form::label('categories', 'Category(es)', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {{-- @TODO Use categories model--}}
-            <div class="form-check">
-                {!! Form::checkbox('categories[]', '1', ['class' => 'form-check-input']) !!}
-                {!! Form::label('Végétalien', null, ['class' => 'form-check-label']) !!}
-            </div>
-            <div class="form-check">
-                {!! Form::checkbox('categories[]', '2', ['class' => 'form-check-input']) !!}
-                {!! Form::label('Poisson', null, ['class' => 'form-check-label']) !!}
-            </div>
-            <div class="form-check">
-                {!! Form::checkbox('categories[]', '3', ['class' => 'form-check-input']) !!}
-                {!! Form::label('Chasse', null, ['class' => 'form-check-label']) !!}
-            </div>
-            <div class="form-check">
-                {!! Form::checkbox('categories[]', '4', ['class' => 'form-check-input']) !!}
-                {!! Form::label('Végétalien', null, ['class' => 'form-check-label']) !!}
-            </div>
+            {!! Form::label('categories', 'Category', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
+            <select  id="select-category" name="category[]" class="select-picker" data-live-search="true" multiple data-actions-box="true" data-width="fit" data-title="Select a category or more" data-style="btn-info">
+                @foreach ($categories as $key => $category)
+                    @php($selectedcategoriesName = array_column($selectedCategories, 'name'))
+                    @if(in_array($category->name, $selectedcategoriesName))
+                    <option value="{{ $loop->index }}" selected>{{$category->name}}</option>
+                    @else
+                    <option value="{{ $loop->index }}">{{$category->name}}</option>
+                    @endif
+                @endforeach
+            </select>
         </div>
 
         <div class="form-group row">
@@ -176,6 +169,9 @@
         @else
             {!! Form::submit('Submit', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
         @endif
-        {!! Form::close() !!}
+
+
+
+            {!! Form::close() !!}
     </div>
 @endsection

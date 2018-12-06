@@ -19,6 +19,7 @@
 
                     <div id="{{'collapse'.$loop->index}}" class="collapse hide" aria-labelledby="{{'heading'.$loop->index}}" data-parent="#accordion">
                         <div class="card-body">
+                            {{--@foreach($menu->categories as $key => $category) {{$category->name}}@endforeach--}}
                             <h5>Categories : {{$menu->category->name}}</h5>
                             @php($menusByType  = $menu->all_dishes)
                             @if(isset($menusByType['starter']))

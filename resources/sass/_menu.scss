@@ -1,4 +1,7 @@
 .menu-create {
+  .btn-info{
+    color: rgba(255, 255, 255, 1.0)!important;
+  }
   .plusMinusBtn  {
     font-family: "Lucida Console", Monaco, monospace;
   }
@@ -22,6 +25,7 @@
       }
     }
   }
+
 
   .form-check {
     padding-top: calc(0.5rem + 1px);

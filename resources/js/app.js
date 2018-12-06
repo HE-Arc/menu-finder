@@ -6,4 +6,5 @@
  */
 
 require('./bootstrap');
-require('./menu');  
+require('./menu');
+require('bootstrap-select');
