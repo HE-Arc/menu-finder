@@ -31,8 +31,8 @@ class Menu extends Model
         return $this->belongsTo('App\Restaurant');
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsToMany('App\Category');
     }
 }
