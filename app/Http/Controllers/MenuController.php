@@ -21,8 +21,10 @@ class MenuController extends Controller
     public function index()
     {
         $currentUser = \Auth::user();
-        $restaurants = $currentUser->restaurants;
-        $menus = $restaurants[0]->menus;
+        $restaurant = $currentUser->restaurant;
+        $menus = null;
+        if(isset($restaurant))
+            $menus = $restaurant->menus;
         return view('menu.index')
             ->with(['menus' => $menus]);
     }
@@ -36,13 +38,9 @@ class MenuController extends Controller
     {
         $menu = new Menu();
         $categories = Category::all();
-        $currentUser = \Auth::user();
-        $restaurants = $currentUser->restaurants;
-        $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
 
         return view('menu.create')
             ->with(['menu' => $menu,
-                    'items' => $restaurantItems,
                     'categories' => $categories]);
     }
 
@@ -55,35 +53,45 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        var_dump($request);
         $request->merge([
             'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
             'dessert' => array_filter($request->input('dessert'), array($this, 'filterArrayNullValue')),
         ]);
+        var_dump($request->input());
 
-        $this->validate($request, [
-            'restaurant' => 'required',
+        $validatedData = $request->validate([
             'name' => 'required|max:255',
             'start' => 'required|date|after:yesterday',
             'end' => 'required|date|after_or_equal:start',
             'dish' => 'required|array|min:1',
-            'categories' => 'required|array|min:1',
+            'starter' => 'sometimes|array',
+            'dessert' => 'sometimes|array',
+            'categories' => 'sometimes|array',
             'price' => 'required',
         ]);
+
+
             $menu = null;
             try {
+                $categoriesId = null;
+                if(isset( $validatedData['categories']))
+                    $categoriesId = array_map('intval', $validatedData['categories']);
+
+                $currentUser = \Auth::user();
+
                 $menu = Menu::create([
-                    'name' => $request->name,
-                    'price' => $request->price,
-                    'start' => $request->start,
-                    'end' => $request->end,
-                    'restaurant_id' => $request->restaurant,
-                    'category_id' => 1,
+                    'name' => $validatedData['name'],
+                    'price' => $validatedData['price'],
+                    'start' => $validatedData['start'],
+                    'end' => $validatedData['end'],
+                    'restaurant_id' => $currentUser->restaurant->id,
                     'active' => true,
                 ]);
+                if($categoriesId != null)
+                    $menu->categories()->sync($categoriesId);
 
-                $this->createDish($request, $menu->id);
+                $this->createDish($validatedData, $menu->id);
 
                 $message = 'The menu ' . $menu->name . ' has been created!';
                 return redirect()
@@ -91,41 +99,41 @@ class MenuController extends Controller
                     ->with(['succesMessage' => $message,
                     ]);
             } catch (\Illuminate\Database\QueryException $exception) {
-                if ($menu != null) {
-                    Dish::where('menu_id', $menu->id)->delete();
-                    Menu::find($menu->id)->delete();
-                }
-                //$errorMessage = $exception->getMessage();
-                $errorMessage = 'There was an error please try again';
-                return redirect()
-                    ->action('MenuController@create')
-                    ->withInput()
-                    ->withErrors(['errorInfo' => $errorMessage]);
-            }
+                 if ($menu != null) {
+                      Dish::where('menu_id', $menu->id)->delete();
+                      Menu::find($menu->id)->delete();
+                  }
+                  $errorMessage = $exception->getMessage();
+                  //$errorMessage = 'There was an error please try again';
+                  return redirect()
+                      ->action('MenuController@create')
+                      ->withInput()
+                      ->withErrors(['errorInfo' => $errorMessage]);
+              }
+      }
 
-    }
-
-    /**
-     * @param Request $request
-     * @param $id
-     */
-    public function createDish(Request $request, $menuId): void
+      /**
+       * @param $validatedRequest
+       * @param $request
+       * @param $menuId
+       */
+    public function createDish($validatedRequest, $menuId): void
     {
-        foreach ($request['dish'] as $key => $val) {
+        foreach ($validatedRequest['dish'] as $key => $val) {
             Dish::create([
                 'name' => $val,
                 'type' => 'main',
                 'menu_id' => $menuId,
             ]);
         }
-        foreach ($request['starter'] as $key => $val) {
+        foreach ($validatedRequest['starter'] as $key => $val) {
             Dish::create([
                 'name' => $val,
                 'type' => 'starter',
                 'menu_id' => $menuId,
             ]);
         }
-        foreach ($request['dessert'] as $key => $val) {
+        foreach ($validatedRequest['dessert'] as $key => $val) {
             Dish::create([
                 'name' => $val,
                 'type' => 'dessert',
@@ -158,18 +166,12 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        $menu = \App\Menu::find($id);
+        $menu = Menu::find($id);
         $categories = Category::all();
-        $selectedCategories = [$menu->category]; //$menu->categories();
-        $currentUser = \Auth::user();
-        $restaurants = $currentUser->restaurants;
-        $restaurantItems = $restaurants->pluck('name', 'id')->toArray();
 
         return view('menu.create')
             ->with(['menu' => $menu,
-                'items' => $restaurantItems,
-                'categories' => $categories,
-                'selectedCategories' => $selectedCategories]);
+                'categories' => $categories]);
     }
 
     /**
@@ -186,14 +188,14 @@ class MenuController extends Controller
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
             'dessert' => array_filter($request->input('dessert'), array($this, 'filterArrayNullValue')),
         ]);
-
-        $this->validate($request, [
-            'restaurant' => 'required',
+        $validatedData = $request->validate([
             'name' => 'required|max:255',
             'start' => 'required|date|after:yesterday',
             'end' => 'required|date|after_or_equal:start',
             'dish' => 'required|array|min:1',
-            'categories' => 'required',
+            'starter' => 'sometimes|array',
+            'dessert' => 'sometimes|array',
+            'categories' => 'sometimes|array',
             'price' => 'required',
         ]);
 
@@ -202,17 +204,28 @@ class MenuController extends Controller
             //Maybe check the one already existent to reduce call to db
             Dish::where('menu_id', $id)->delete();
 
+            $currentUser = \Auth::user();
+
+            $categoriesId = null;
+            if(isset( $validatedData['categories']))
+                $categoriesId = array_map('intval', $validatedData['categories']);
+
             $menu = Menu::find($id);
             $menu->update([
-                'name' => $request->name,
-                'price' => $request->price,
-                'start' => $request->start,
-                'end' => $request->end,
-                'restaurant_id' => $request->restaurant,
-                'category_id' => 1,
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'start' => $validatedData['start'],
+                'end' => $validatedData['end'],
+                'restaurant_id' => $currentUser->restaurant->id,
+                'active' => true,
             ]);
 
-            $this->createDish($request, $id);
+            if($categoriesId != null)
+                $menu->categories()->sync($categoriesId);
+            else
+                $menu->categories()->detach();
+
+            $this->createDish($validatedData, $id);
 
             $message = 'The menu ' . $menu->name . ' has been updated!';
             return redirect()
@@ -223,7 +236,7 @@ class MenuController extends Controller
         //$errorMessage = $exception->getMessage();
         $errorMessage = 'There was an error please try again';
         return redirect()
-            ->action('MenuController@update')
+            ->back()
             ->withInput()
             ->withErrors(['errorInfo' => $errorMessage]);
         }
@@ -241,6 +254,7 @@ class MenuController extends Controller
         {
             $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
+            $menu->categories()->detach();
             $menu->delete();
             //maybe add foreign key constraints or model event
             Dish::where('menu_id', $id)->delete();

@@ -8,7 +8,7 @@
             $menusByType['starter'] = old('starter') != null ? old('starter') : [""];
             $menusByType['main'] = old('dish') != null ? old('dish') : [""];
             $menusByType['dessert'] = old('dessert') != null ? old('dessert') : [""];
-            $selectedCategoriesName = old('categories') != null ? old('starter') : [""];
+            $selectedCategoriesName = old('categories') != null ? old('categories') : [""];
         }
         else
         {
@@ -31,11 +31,6 @@
                 {{$errors->first('errorInfo')}}
             </div>
         @endif
-        <div class="form-group row">
-            {!! Form::label('restaurant', 'Restaurant', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::select('restaurant', $items, null, ['class' => 'form-control col-sm-10']) !!}
-        </div>
-
         <div class="form-group row">
             {!! Form::label('name', 'Title', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             {!! Form::text('name', old('name'), ['class' => 'form-control col-sm-10']) !!}
@@ -148,13 +143,15 @@
 
         <div class="categories-container row">
             {!! Form::label('categories', 'Category', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            <select  id="select-category" name="category[]" class="select-picker" data-live-search="true" multiple data-actions-box="true" data-width="fit" data-title="Select a category or more" data-style="btn-info">
+            <select  id="select-category" name="categories[]" class="select-picker" data-live-search="true" multiple data-actions-box="true" data-width="fit" data-title="Select a category or more" data-style="btn-info">
                 @foreach ($categories as $key => $category)
-                    @php($selectedcategoriesName = array_column($selectedCategories, 'name'))
-                    @if(in_array($category->name, $selectedcategoriesName))
-                    <option value="{{ $loop->index }}" selected>{{$category->name}}</option>
-                    @else
-                    <option value="{{ $loop->index }}">{{$category->name}}</option>
+                    @if(isset($menu))
+                        @php($selectedCategoriesName = array_column($menu->categories()->get()->toArray(), 'name'))
+                        @if(in_array($category->name, $selectedCategoriesName))
+                        <option value="{{ $category->id }}" selected>{{$category->name}}</option>
+                        @else
+                            <option value="{{ $category->id }}">{{$category->name}}</option>
+                        @endif
                     @endif
                 @endforeach
             </select>
