@@ -21,6 +21,16 @@ class Menu extends Model
         'active',
     ];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'start',
+        'end',
+    ];
+
     public function dishes()
     {
         return $this->hasMany('App\Dish');
@@ -34,5 +44,10 @@ class Menu extends Model
     public function categories()
     {
         return $this->belongsToMany('App\Category');
+    }
+
+    public function getPriceAttribute($value)
+    {
+        return round((float) $value, 2);
     }
 }

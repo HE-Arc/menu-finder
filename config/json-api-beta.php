@@ -55,6 +55,7 @@ return [
     'resources' => [
         'categories' => App\Category::class,
         'restaurants' => App\Restaurant::class,
+        'menus' => App\Menu::class,
     ],
 
     /*

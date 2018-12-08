@@ -1,11 +1,14 @@
 <?php
 
+use App\Category;
+use App\Menu;
 use App\Restaurant;
 use App\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Phaza\LaravelPostgis\Geometries\Point;
 
-class RestaurantsTableSeeder extends Seeder
+class DummyTablesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,7 +23,7 @@ class RestaurantsTableSeeder extends Seeder
             'email' => 'fake-owner@example.com',
         ]);
 
-        Restaurant::create([
+        $restaurant = Restaurant::create([
             'name' => 'King Food',
             'active' => true,
             'rate_sum' => 15,
@@ -32,5 +35,23 @@ class RestaurantsTableSeeder extends Seeder
             'website' => 'http://www.king-food.ch/',
             'user_id' => $owner->id,
         ]);
+
+        $category1 = Category::create([
+            'name' => 'Chasse',
+        ]);
+
+        $category2 = Category::create([
+            'name' => 'Végétarien'
+        ]);
+
+        $menu = Menu::create([
+            'name' => 'Menu italien',
+            'price' => 11.95,
+            'start' => new Carbon('today midnight'),
+            'end' => new Carbon('tomorrow midnight'),
+            'restaurant_id' => $restaurant->id,
+        ]);
+
+        $menu->categories()->sync([$category1->id, $category2->id]);
     }
 }
