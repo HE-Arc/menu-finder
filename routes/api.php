@@ -1,5 +1,6 @@
 <?php
 
+use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
 
 /*
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+JsonApi::register('beta', ['namespace' => 'Api'], function ($api, $router) {
+    $api->resource('categories', [
+        'only' => ['index', 'read'],
+    ]);
 });
