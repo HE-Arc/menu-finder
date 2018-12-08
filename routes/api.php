@@ -18,4 +18,8 @@ JsonApi::register('beta', ['namespace' => 'Api'], function ($api, $router) {
     $api->resource('categories', [
         'only' => ['index', 'read'],
     ]);
+
+    $api->resource('restaurants', [
+        'only' => ['index', 'read'],
+    ]);
 });
