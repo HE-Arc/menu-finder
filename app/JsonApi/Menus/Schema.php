@@ -2,6 +2,8 @@
 
 namespace App\JsonApi\Menus;
 
+use App\Menu;
+use App\Restaurant;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
@@ -11,6 +13,15 @@ class Schema extends SchemaProvider
      * @var string
      */
     protected $resourceType = 'menus';
+
+    /**
+     * @var array
+     */
+    protected $relationships = [
+        'restaurant',
+        'categories',
+        'dishes',
+    ];
 
     /**
      * @param $resource
@@ -35,6 +46,42 @@ class Schema extends SchemaProvider
             'start' => $resource->start->toIso8601String(),
             'end' => $resource->end->toIso8601String(),
             'active' => $resource->active,
+        ];
+    }
+
+    /**
+     * @param Menu $resource
+     * @param bool $isPrimary
+     * @param array $includedRelationships
+     * @return array
+     */
+    public function getRelationships($resource, $isPrimary, array $includedRelationships)
+    {
+        return [
+            'restaurant' => [
+                self::SHOW_SELF => false,
+                self::SHOW_RELATED => true,
+                self::SHOW_DATA => true,
+                self::DATA => function () use ($resource) {
+                    return $resource->restaurant;
+                },
+            ],
+            'categories' => [
+                self::SHOW_SELF => false,
+                self::SHOW_RELATED => true,
+                self::SHOW_DATA => true,
+                self::DATA => function () use ($resource) {
+                    return $resource->categories;
+                },
+            ],
+            'dishes' => [
+                self::SHOW_SELF => false,
+                self::SHOW_RELATED => true,
+                self::SHOW_DATA => true,
+                self::DATA => function () use ($resource) {
+                    return $resource->dishes;
+                },
+            ],
         ];
     }
 }

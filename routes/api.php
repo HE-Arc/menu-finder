@@ -25,5 +25,7 @@ JsonApi::register('beta', ['namespace' => 'Api'], function ($api, $router) {
 
     $api->resource('menus', [
         'only' => ['index', 'read'],
+        'has-one' => 'restaurant',
+        'has-many' => ['categories', 'dishes'],
     ]);
 });

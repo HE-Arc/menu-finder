@@ -1,6 +1,7 @@
 <?php
 
 use App\Category;
+use App\Dish;
 use App\Menu;
 use App\Restaurant;
 use App\User;
@@ -53,5 +54,17 @@ class DummyTablesSeeder extends Seeder
         ]);
 
         $menu->categories()->sync([$category1->id, $category2->id]);
+
+        $dish1 = Dish::create([
+            'name' => 'Lasagne',
+            'type' => 'main',
+            'menu_id' => $menu->id,
+        ]);
+
+        $dish2 = Dish::create([
+            'name' => 'Tiramisu',
+            'type' => 'dessert',
+            'menu_id' => $menu->id,
+        ]);
     }
 }
