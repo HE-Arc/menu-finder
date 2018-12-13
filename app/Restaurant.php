@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Phaza\LaravelPostgis\Eloquent\PostgisTrait;
+use Illuminate\Support\Facades\Storage;
 
 class Restaurant extends Model
 {
@@ -26,6 +27,7 @@ class Restaurant extends Model
         'city',
         'avatar',
         'description',
+        'website',
     ];
 
     /**
@@ -65,5 +67,10 @@ class Restaurant extends Model
     public function menus()
     {
         return $this->hasMany('App\Menu');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+      return Storage::url('avatars/' . $this->avatar);
     }
 }
