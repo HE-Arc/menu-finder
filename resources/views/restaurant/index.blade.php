@@ -73,7 +73,6 @@
   </div>
 
 </div>
-</div>
 @if(isset($restaurant->id))
     {!! Form::submit('Update', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
 @else

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Http\Client\HttpClient;
 use Illuminate\Http\Request;
 use App\Restaurant;
 use Illuminate\Support\Facades\Input;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Geocoder\Query\GeocodeQuery;
+use Phaza\LaravelPostgis\Geometries\Point;
 
 class RestaurantController extends Controller
 {
 
     public function __construct()
     {
-      $this->middleware('auth');
+        $this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -22,9 +25,9 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-      $restaurant = !\Auth::user()->restaurants->isEmpty() ? \Auth::user()->restaurants[0] : new Restaurant();
-      #var_dump($restaurant->name);
-      return view('restaurant.index')
+        $restaurant = !\Auth::user()->restaurants->isEmpty() ? \Auth::user()->restaurants[0] : new Restaurant();
+
+        return view('restaurant.index')
           ->with(['restaurant' => $restaurant]);
     }
 
@@ -35,10 +38,7 @@ class RestaurantController extends Controller
      */
     public function create()
     {
-      $restaurant = !\Auth::user()->restaurants->isEmpty() ? \Auth::user()->restaurants[0] : new Restaurant();
-      #var_dump($restaurant->name);
-      return view('restaurant.create')
-          ->with(['restaurant' => $restaurant]);
+        //
     }
 
     /**
@@ -49,22 +49,22 @@ class RestaurantController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $this->validate($request, [
-            'name' => 'required',
-            'address' => 'required',
-            'city' => 'required',
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
             'zip' => 'required|integer',
-            'description' => 'required',
-
+            'description' => 'required|string',
+            'website' => 'sometimes|string'
         ]);
+
+        $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
 
         $restaurant = null;
         try {
             $restaurant = Restaurant::create([
                 'name' => $request->name,
-                #'location' => $request->price,
+                'location' => new Point($result->getLatitude(), $result->getLongitude()),
                 'address' => $request->address,
                 'city' => $request->city,
                 'zip' => $request->zip,
@@ -76,7 +76,7 @@ class RestaurantController extends Controller
             ]);
 
             $base64_image = $request->input('avatar');
-            $img =  self::uploadBase64Avatar($base64_image, $restaurant);
+            $img = self::uploadBase64Avatar($restaurant, $base64_image);
 
             $restaurant->update([
               'avatar' => $img,
@@ -91,55 +91,37 @@ class RestaurantController extends Controller
             if ($restaurant != null) {
                 Restaurant::find($restaurant->id)->delete();
             }
-            $errorMessage = $exception->getMessage();
-            //$errorMessage = 'There was an error please try again';
+            //$errorMessage = $exception->getMessage();
+            $errorMessage = 'There was an error please try again';
             return redirect()
-                ->action('RestaurantController@create')
+                ->action('RestaurantController@index')
                 ->withInput()
                 ->withErrors(['errorInfo' => $errorMessage]);
         }
-
-
     }
 
-    public static function uploadBase64Avatar($base64 = '', $restaurant)
+    public static function uploadBase64Avatar($restaurant, $base64 = '')
     {
-//        var_dump('In here');
         if (empty($base64)) {
-          return 'default.jpg';
+            return 'default.jpg';
         }
-
+        var_dump($base64);
         try {
             $image = Image::make($base64)->resize(300, 300)->encode('jpg');
-        }  catch(\Exception $e) {
+        } catch (\Exception $e) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
-                'avatar' => ['Image invalide'],
+                'avatar' => ['Invalid image'],
             ]);
             throw $error;
         }
 
-        if($image->filesize() <= 2000) {
-            // $mimes = new \Mimey\MimeTypes;
-            //
-            // if(!empty($user)) {
-            //     $basename = str_slug($user->name) . '-' . $user->id;
-            // } else {
-            //     $tempname = tempnam(public_path('img/avatar/'), 'avatar_');
-            //     $basename = basename($tempname);
-            //     @unlink($tempname);
-            // }
-            //
-            // $name = $basename . '.' . $mimes->getExtension($image->mime());
-            // $path = public_path('img/avatar/' . $name);
-            // $image->save($path);
-
-            // return $name;
+        if ($image->filesize() <= 2000) {
             $path = $restaurant->id . '.jpg';
             Storage::put('avatars/' . $path, $image->__toString());
             return $path;
         } else {
             $error = \Illuminate\Validation\ValidationExx§ception::withMessages([
-                'avatar' => ['Image trop lourde.'],
+                'avatar' => ['Image is too large.'],
             ]);
             throw $error;
         }
@@ -176,58 +158,60 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-
-
-      $this->validate($request, [
-          'name' => 'required',
-          'address' => 'required',
-          'city' => 'required',
+        $location = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+        $this->validate($request, [
+          'name' => 'required|string',
+          'address' => 'required|string',
+          'city' => 'required|string',
           'zip' => 'required|integer',
-          'description' => 'required',
+          'description' => 'required|string',
+          'website' => 'sometimes|string'
+        ]);
 
-      ]);
-
-      $restaurant = null;
-      try {
-
-
-          $restaurant = Restaurant::find($id);
-          $restaurant->update([
+        $restaurant = null;
+        try {
+            $restaurant = Restaurant::find($id);
+            $restaurant->update([
               'name' => $request->name,
-              #'location' => $request->price,
+              'location' => new Point($location->getLatitude(), $location->getLongitude()),
               'address' => $request->address,
               'city' => $request->city,
               'zip' => $request->zip,
-              #'avatar' => $request->avatar,
               'description' => $request->description,
               'website' => $request->website,
               'active' => true,
-          ]);
+            ]);
 
-          $base64_image = $request->input('avatar');
+            $base64_image = $request->input('avatar');
 
-          $img =  self::uploadBase64Avatar($base64_image, $restaurant);
+            $img = self::uploadBase64Avatar($restaurant, $base64_image);
 
-          $restaurant->update([
-            'avatar' => $img,
-          ]);
-          $message = 'The Restaurant ' . $restaurant->name . ' has been updated!';
-          return redirect()
-              ->action('RestaurantController@create')
+            $restaurant->update([
+              'avatar' => $img,
+            ]);
+            $message = 'The Restaurant ' . $restaurant->name . ' has been updated!';
+            return redirect()
+              ->action('RestaurantController@index')
               ->with(['succesMessage' => $message,
               ]);
-      } catch (\Illuminate\Database\QueryException $exception) {
-
-          $errorMessage = $exception->getMessage();
-          //$errorMessage = 'There was an error please try again';
-          return redirect()
-              ->action('RestaurantController@create')
+        } catch (\Illuminate\Database\QueryException $exception) {
+            //$errorMessage = $exception->getMessage();
+            $errorMessage = 'There was an error please try again';
+            return redirect()
+              ->action('RestaurantController@index')
               ->withInput()
               ->withErrors(['errorInfo' => $errorMessage]);
-      }
+        }
     }
+    public function getCoordinateFromAddress($address)
+    {
+        $httpClient = new \Http\Adapter\Guzzle6\Client();
+        $provider = new \Geocoder\Provider\AlgoliaPlaces\AlgoliaPlaces($httpClient, env("ALGOLIA_GEOCODE_API_KEY"), env("ALGOLIA_GEOCODE_APP_ID"));
+        $geocoder = new \Geocoder\StatefulGeocoder($provider, 'en');
+        $result = $geocoder->geocodeQuery(GeocodeQuery::create($address));
 
+        return $result->get(0)->getCoordinates();
+    }
     /**
      * Remove the specified resource from storage.
      *

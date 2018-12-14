@@ -15,17 +15,17 @@ class Helper
 
         try {
             $image = Image::make($base64)->resize(300, 300);
-        }  catch(\Exception $e) {
+        } catch (\Exception $e) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'avatar' => ['Image invalide'],
             ]);
             throw $error;
         }
 
-        if($image->filesize() <= 2000) {
+        if ($image->filesize() <= 2000) {
             $mimes = new \Mimey\MimeTypes;
 
-            if(!empty($restaurant)) {
+            if (!empty($restaurant)) {
                 $basename = str_slug($restaurant->name) . '-' . $restaurant->id;
             } else {
                 $tempname = tempnam(public_path('img/avatar/'), 'avatar_');

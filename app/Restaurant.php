@@ -71,6 +71,6 @@ class Restaurant extends Model
 
     public function getAvatarUrlAttribute()
     {
-      return Storage::url('avatars/' . $this->avatar);
+        return Storage::url('avatars/' . $this->avatar);
     }
 }
