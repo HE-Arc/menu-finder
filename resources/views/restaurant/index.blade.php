@@ -4,6 +4,11 @@
 @foreach ($errors->all() as $error)
     <div class="alert alert-danger">{{ $error }}</div>
 @endforeach
+@if(session('succesMessage'))
+  <div class="alert alert-success">
+    {{session('succesMessage')}}
+  </div>
+@endif
 @if(isset($restaurant->id))
     {!! Form::model($restaurant, ['method' => 'PATCH', 'route' => ['restaurants.update', $restaurant->id], 'id' => 'form-restaurant-update']) !!}
 @else
