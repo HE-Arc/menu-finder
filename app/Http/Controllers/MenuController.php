@@ -58,7 +58,6 @@ class MenuController extends Controller
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
             'dessert' => array_filter($request->input('dessert'), array($this, 'filterArrayNullValue')),
         ]);
-        var_dump($request->input());
 
         $validatedData = $request->validate([
             'name' => 'required|max:255',
@@ -145,17 +144,6 @@ class MenuController extends Controller
     private function filterArrayNullValue($value)
     {
         return $value != null;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

@@ -14,7 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::resource('menus', 'MenuController');
+Route::resource('menus', 'MenuController', [
+    'except' => ['show'],
+]);
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home', 'MenuController@index')->name('restaurant');
