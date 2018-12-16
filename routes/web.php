@@ -15,7 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('menus', 'MenuController');
-Route::resource('restaurants', 'RestaurantController');
+Route::resource('restaurants', 'RestaurantController', [
+    'only' => ['index', 'store', 'update'],
+]);
                   
 
 Auth::routes();

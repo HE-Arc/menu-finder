@@ -18,6 +18,7 @@ class RestaurantController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,16 +30,6 @@ class RestaurantController extends Controller
 
         return view('restaurant.index')
           ->with(['restaurant' => $restaurant]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -58,7 +49,7 @@ class RestaurantController extends Controller
             'website' => 'sometimes|string'
         ]);
 
-        $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+        $result = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
 
         $restaurant = null;
         try {
@@ -105,7 +96,7 @@ class RestaurantController extends Controller
         if (empty($base64)) {
             return 'default.jpg';
         }
-        var_dump($base64);
+
         try {
             $image = Image::make($base64)->resize(300, 300)->encode('jpg');
         } catch (\Exception $e) {
@@ -117,7 +108,7 @@ class RestaurantController extends Controller
 
         if ($image->filesize() <= 2000) {
             $path = $restaurant->id . '.jpg';
-            Storage::put('avatars/' . $path, $image->__toString());
+            Storage::disk('public')->put('avatars/' . $path, $image->__toString());
             return $path;
         } else {
             $error = \Illuminate\Validation\ValidationExx§ception::withMessages([
@@ -125,28 +116,6 @@ class RestaurantController extends Controller
             ]);
             throw $error;
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -203,6 +172,7 @@ class RestaurantController extends Controller
               ->withErrors(['errorInfo' => $errorMessage]);
         }
     }
+
     public function getCoordinateFromAddress($address)
     {
         $httpClient = new \Http\Adapter\Guzzle6\Client();
@@ -211,15 +181,5 @@ class RestaurantController extends Controller
         $result = $geocoder->geocodeQuery(GeocodeQuery::create($address));
 
         return $result->get(0)->getCoordinates();
-    }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

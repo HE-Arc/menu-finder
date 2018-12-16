@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Phaza\LaravelPostgis\Eloquent\PostgisTrait;
-use Illuminate\Support\Facades\Storage;
 
 class Restaurant extends Model
 {
@@ -71,6 +70,6 @@ class Restaurant extends Model
 
     public function getAvatarUrlAttribute()
     {
-        return Storage::url('avatars/' . $this->avatar);
+        return asset('storage/avatars/' . $this->avatar);
     }
 }
