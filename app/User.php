@@ -31,8 +31,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function restaurants()
+    public function restaurant()
     {
-        return $this->hasMany('App\Restaurant');
+        return $this->hasOne('App\Restaurant');
     }
 }

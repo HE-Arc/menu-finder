@@ -26,7 +26,7 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        $restaurant = !\Auth::user()->restaurants->isEmpty() ? \Auth::user()->restaurants[0] : new Restaurant();
+        $restaurant = !empty(\Auth::user()->restaurant) ? \Auth::user()->restaurant : new Restaurant();
 
         return view('restaurant.index')
           ->with(['restaurant' => $restaurant]);
