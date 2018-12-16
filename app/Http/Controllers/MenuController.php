@@ -23,8 +23,9 @@ class MenuController extends Controller
         $currentUser = \Auth::user();
         $restaurant = $currentUser->restaurant;
         $menus = null;
-        if(isset($restaurant))
+        if (isset($restaurant)) {
             $menus = $restaurant->menus;
+        }
         return view('menu.index')
             ->with(['menus' => $menus]);
     }
@@ -72,44 +73,46 @@ class MenuController extends Controller
 
 
             $menu = null;
-            try {
-                $categoriesId = null;
-                if(isset( $validatedData['categories']))
-                    $categoriesId = array_map('intval', $validatedData['categories']);
+        try {
+            $categoriesId = null;
+            if (isset($validatedData['categories'])) {
+                $categoriesId = array_map('intval', $validatedData['categories']);
+            }
 
-                $currentUser = \Auth::user();
+            $currentUser = \Auth::user();
 
-                $menu = Menu::create([
-                    'name' => $validatedData['name'],
-                    'price' => $validatedData['price'],
-                    'start' => $validatedData['start'],
-                    'end' => $validatedData['end'],
-                    'restaurant_id' => $currentUser->restaurant->id,
-                    'active' => true,
+            $menu = Menu::create([
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'start' => $validatedData['start'],
+                'end' => $validatedData['end'],
+                'restaurant_id' => $currentUser->restaurant->id,
+                'active' => true,
+            ]);
+            if ($categoriesId != null) {
+                $menu->categories()->sync($categoriesId);
+            }
+
+            $this->createDish($validatedData, $menu->id);
+
+            $message = 'The menu ' . $menu->name . ' has been created!';
+            return redirect()
+                ->action('MenuController@index')
+                ->with(['succesMessage' => $message,
                 ]);
-                if($categoriesId != null)
-                    $menu->categories()->sync($categoriesId);
-
-                $this->createDish($validatedData, $menu->id);
-
-                $message = 'The menu ' . $menu->name . ' has been created!';
-                return redirect()
-                    ->action('MenuController@index')
-                    ->with(['succesMessage' => $message,
-                    ]);
-            } catch (\Illuminate\Database\QueryException $exception) {
-                 if ($menu != null) {
-                      Dish::where('menu_id', $menu->id)->delete();
-                      Menu::find($menu->id)->delete();
-                  }
-                  $errorMessage = $exception->getMessage();
-                  //$errorMessage = 'There was an error please try again';
-                  return redirect()
-                      ->action('MenuController@create')
-                      ->withInput()
-                      ->withErrors(['errorInfo' => $errorMessage]);
-              }
-      }
+        } catch (\Illuminate\Database\QueryException $exception) {
+            if ($menu != null) {
+                    Dish::where('menu_id', $menu->id)->delete();
+                    Menu::find($menu->id)->delete();
+            }
+              $errorMessage = $exception->getMessage();
+              //$errorMessage = 'There was an error please try again';
+              return redirect()
+                  ->action('MenuController@create')
+                  ->withInput()
+                  ->withErrors(['errorInfo' => $errorMessage]);
+        }
+    }
 
       /**
        * @param $validatedRequest
@@ -195,8 +198,9 @@ class MenuController extends Controller
             $currentUser = \Auth::user();
 
             $categoriesId = null;
-            if(isset( $validatedData['categories']))
+            if (isset($validatedData['categories'])) {
                 $categoriesId = array_map('intval', $validatedData['categories']);
+            }
 
             $menu = Menu::find($id);
             $menu->update([
@@ -208,10 +212,11 @@ class MenuController extends Controller
                 'active' => true,
             ]);
 
-            if($categoriesId != null)
+            if ($categoriesId != null) {
                 $menu->categories()->sync($categoriesId);
-            else
+            } else {
                 $menu->categories()->detach();
+            }
 
             $this->createDish($validatedData, $id);
 
@@ -222,8 +227,8 @@ class MenuController extends Controller
                 ]);
         } catch (\Illuminate\Database\QueryException $exception) {
         //$errorMessage = $exception->getMessage();
-        $errorMessage = 'There was an error please try again';
-        return redirect()
+            $errorMessage = 'There was an error please try again';
+            return redirect()
             ->back()
             ->withInput()
             ->withErrors(['errorInfo' => $errorMessage]);
@@ -238,8 +243,7 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        try
-        {
+        try {
             $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
             $menu->categories()->detach();
@@ -251,8 +255,7 @@ class MenuController extends Controller
                 ->action('MenuController@index')
                 ->with(['succesMessage' => $message,
                 ]);
-        }
-        catch (\Illuminate\Database\QueryException $exception) {
+        } catch (\Illuminate\Database\QueryException $exception) {
             //$errorMessage = $exception->getMessage();
             $errorMessage = 'There was an error please try again';
             return redirect()
@@ -260,6 +263,5 @@ class MenuController extends Controller
                 ->withInput()
                 ->withErrors(['errorInfo' => $errorMessage]);
         }
-
     }
 }

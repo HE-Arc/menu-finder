@@ -21,10 +21,12 @@ class Menu extends Model
         'active',
     ];
 
-    public function getStartFormatAttribute() {
+    public function getStartFormatAttribute()
+    {
         return \Carbon\Carbon::parse($this->attributes['start'])->format('d-m-Y');
     }
-    public function getEndFormatAttribute() {
+    public function getEndFormatAttribute()
+    {
         return \Carbon\Carbon::parse($this->attributes['end'])->format('d-m-Y');
     }
 
@@ -46,17 +48,16 @@ class Menu extends Model
     {
         return $this->belongsToMany('App\Category');
     }
-    public function  getMainDishesAttribute()
+    public function getMainDishesAttribute()
     {
-        return $this->dishes()->where('type', 'main','==')->get();
+        return $this->dishes()->where('type', 'main', '==')->get();
     }
-    public function  getStarterDishesAttribute()
+    public function getStarterDishesAttribute()
     {
-        return $this->dishes()->where('type', 'starter','==')->get();
+        return $this->dishes()->where('type', 'starter', '==')->get();
     }
-    public function  getDessertDishesAttribute()
+    public function getDessertDishesAttribute()
     {
-        return $this->dishes()->where('type', 'dessert','==')->get();
+        return $this->dishes()->where('type', 'dessert', '==')->get();
     }
-
 }
