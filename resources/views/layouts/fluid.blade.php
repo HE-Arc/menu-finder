@@ -19,7 +19,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="homepage">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel sticky-top">
             <div class="container">
@@ -77,10 +77,8 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            <div class="container">
+        <main>
             @yield('content')
-            </div>
         </main>
     </div>
 </body>
