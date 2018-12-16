@@ -26,6 +26,7 @@ class Restaurant extends Model
         'city',
         'avatar',
         'description',
+        'website',
     ];
 
     /**
@@ -65,5 +66,10 @@ class Restaurant extends Model
     public function menus()
     {
         return $this->hasMany('App\Menu');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return asset('storage/avatars/' . $this->avatar);
     }
 }

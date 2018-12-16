@@ -7,4 +7,5 @@
 
 require('./bootstrap');
 require('./menu');
+require('./image-crop');
 require('bootstrap-select');
