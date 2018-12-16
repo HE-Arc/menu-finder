@@ -13,7 +13,7 @@
                 <div class="card">
                     <div class="card-header" id="{{'heading'.$loop->index}}" data-toggle="collapse" data-target="{{'#collapse'.$loop->index}}" aria-expanded="true" aria-controls="{{'collapse'.$loop->index}}">
                         <h5 class="{{'head-'.$loop->index}}">
-                            <span>{{$menu->name}}</span>  <span class="span-date">{{$menu->start_format . " / " . $menu->end_format}}</span>
+                            <span>{{$menu->name}}</span><span class="span-date">{{$menu->start_format . " / " . $menu->end_format}}</span>
                         </h5>
                     </div>
 
