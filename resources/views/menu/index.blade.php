@@ -62,7 +62,7 @@
             @endforelse
             @else
             <div class="alert alert-warning">
-                <h3>You haven't registered a restaurant yet</h3> <a class="right-Link btn btn-primary" href=""> Add a Restaurant</a>
+                <h3>You haven't registered a restaurant yet</h3> <a class="right-Link btn btn-primary" href="{{action('RestaurantController@index')}}"> Add a Restaurant</a>
             </div>
             @endif
     </div>
