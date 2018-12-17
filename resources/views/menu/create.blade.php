@@ -144,16 +144,16 @@
         <div class="categories-container row">
             {!! Form::label('categories', 'Category', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
             <select  id="select-category" name="categories[]" class="select-picker" data-live-search="true" multiple data-actions-box="true" data-width="fit" data-title="Select a category or more" data-style="btn-primary">
-                @foreach ($categories as $key => $category)
-                    @if(isset($menu))
-                        @php($selectedCategoriesName = array_column($menu->categories()->get()->toArray(), 'name'))
+                @if(isset($menu))
+                    @php($selectedCategoriesName = array_column($menu->categories()->get()->toArray(), 'name'))
+                    @foreach ($categories as $key => $category)
                         @if(in_array($category->name, $selectedCategoriesName))
                         <option value="{{ $category->id }}" selected>{{$category->name}}</option>
                         @else
                             <option value="{{ $category->id }}">{{$category->name}}</option>
                         @endif
-                    @endif
-                @endforeach
+                    @endforeach
+                @endif
             </select>
         </div>
 

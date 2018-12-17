@@ -24,7 +24,7 @@ class MenuController extends Controller
         $restaurant = $currentUser->restaurant;
         $menus = null;
         if (isset($restaurant)) {
-            $menus = $restaurant->menus;
+            $menus = $restaurant->menus->load('categories', 'dishes');
         }
         return view('menu.index')
             ->with(['menus' => $menus]);
@@ -197,7 +197,7 @@ class MenuController extends Controller
 
         try {
             //Now we delete every dish from the menu an create the new one
-            //Maybe check the one already existent to reduce call to db
+            //Maybe check the one already existent
             Dish::where('menu_id', $id)->delete();
 
             $currentUser = \Auth::user();
