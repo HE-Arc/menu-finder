@@ -30,7 +30,12 @@ body.homepage {
 
   .title {
     font-size: 84px;
+
+    @include media-breakpoint-up(sm) {
+        font-size: 48px;
+    }
   }
+
   .links {
     align-self: flex-end;
 
@@ -62,8 +67,8 @@ body.homepage {
     opacity: 0.4;
     display: block;
     position: absolute;
-    min-height: 300vh;
-    width: 100vw;
+    min-height: 400vh;
+    width: 100%;
   }
 
   .welcomeText {
@@ -84,9 +89,24 @@ body.homepage {
     width: 20vw;
   }
 
-  @media screen and (max-width: 640px) {
-    .title {
-      font-size: 48px;
+  .startBtn {
+    background-color: rgba(110, 110, 110, 0);
+    border: 5px solid rgba(64, 113, 71, 1);
+    padding: 12px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(64, 113, 71, 0.9);
+    }
+  }
+
+  .linkStart {
+    color: black;
+    text-decoration: none;
+
+    &:hover {
+      color:white;
     }
   }
 

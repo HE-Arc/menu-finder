@@ -4,6 +4,11 @@
 @foreach ($errors->all() as $error)
     <div class="alert alert-danger">{{ $error }}</div>
 @endforeach
+@if(session('succesMessage'))
+  <div class="alert alert-success">
+    {{session('succesMessage')}}
+  </div>
+@endif
 @if(isset($restaurant->id))
     {!! Form::model($restaurant, ['method' => 'PATCH', 'route' => ['restaurants.update', $restaurant->id], 'id' => 'form-restaurant-update']) !!}
 @else
@@ -34,7 +39,7 @@
   <div class="form-group">
     <div class="mb-3">
       <label for="validationDefault05">Website</label>
-      <input name="website" type="text" value="{{ old('website', $restaurant->website) }}" class="form-control" id="validationDefault05" placeholder="Website" required>
+      <input name="website" type="text" value="{{ old('website', $restaurant->website) }}" class="form-control" id="validationDefault05" placeholder="Website" >
     </div>
   </div>
   <div class="form-group">
@@ -74,11 +79,13 @@
 
 </div>
 @if(isset($restaurant->id))
-    {!! Form::submit('Update', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
+    {!! Form::submit('Update Restaurant', ['class' => 'btn btn-primary btnSubmit btn-lg', 'id' => 'send_button']) !!}
+    <a style="margin-left: 2vw"class="btn btn-primary btnSubmit btn-lg" href="{{action('MenuController@create')}}"> Add a menu</a>
 @else
-    {!! Form::submit('Submit', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
+    {!! Form::submit('Create Restaurant', ['class' => 'btn btn-primary btnSubmit btn-lg', 'id' => 'send_button']) !!}
 @endif
 {!! Form::close() !!}
+
 
 </div>
 @endsection

@@ -13,14 +13,14 @@
                 <div class="card">
                     <div class="card-header" id="{{'heading'.$loop->index}}" data-toggle="collapse" data-target="{{'#collapse'.$loop->index}}" aria-expanded="true" aria-controls="{{'collapse'.$loop->index}}">
                         <h5 class="{{'head-'.$loop->index}}">
-                            <span>{{$menu->name}}</span>  <span class="span-date">{{$menu->start_format . " / " . $menu->end_format}}</span>
+                            <span>{{$menu->name}}</span><span class="span-date">{{$menu->start_format . " / " . $menu->end_format}}</span>
                         </h5>
                     </div>
 
                     <div id="{{'collapse'.$loop->index}}" class="collapse hide" aria-labelledby="{{'heading'.$loop->index}}" data-parent="#accordion">
                         <div class="card-body">
                             <h5>Categories : @forelse($menu->categories as $key => $category) {{$category->name .", "}}@empty no category @endforelse</h5>
-                            @php($menusByType  = $menu->all_dishes)
+                            @php($menusByType  = $menu->dishes->groupBy('type'))
                             @if(isset($menusByType['starter']))
                                 <h5>Starter(s)</h5>
                                 <ul class="list-group">
@@ -62,7 +62,7 @@
             @endforelse
             @else
             <div class="alert alert-warning">
-                <h3>You haven't registered a restaurant yet</h3> <a class="right-Link btn btn-primary" href=""> Add a Restaurant</a>
+                <h3>You haven't registered a restaurant yet</h3> <a class="right-Link btn btn-primary" href="{{action('RestaurantController@index')}}"> Add a Restaurant</a>
             </div>
             @endif
     </div>

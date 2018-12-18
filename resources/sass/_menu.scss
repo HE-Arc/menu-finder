@@ -1,16 +1,19 @@
 .menu-create {
-  .btn-info{
+  .btn-info {
     color: rgba(255, 255, 255, 1.0)!important;
   }
-  .plusMinusBtn  {
+
+  .plusMinusBtn {
     font-family: "Lucida Console", Monaco, monospace;
   }
-  .form-control{
+  .form-control {
     height: auto;
   }
-  .btnSubmit{
+
+  .btnSubmit {
     float : right;
   }
+
   .mealInput {
     padding-left: 0;
 
@@ -35,40 +38,46 @@
     }
   }
 }
-.menu-index
-{
-  .alert{
-    .right-Link{
+
+.menu-index {
+  .alert {
+    .right-Link {
       float: right;
       padding: 0.5rem 0.5rem;
       font-size: large;
     }
-    h3{
-      display: inline-block;    }
+
+    h3 {
+      display: inline-block;
+    }
   }
 
-
-  .span-date{
+  .span-date {
     float: right;
   }
-  .btn-block{
+
+  .btn-block {
     text-align: left;
   }
-  .card-header  {
+
+  .card-header {
     cursor: pointer;
   }
-  .btn{
+
+  .btn {
     text-align: left;
   }
-  .card{
-    h5{
+
+  .card {
+    h5 {
       padding-top: 10px;
     }
-    .list-group-item
-    {
+
+    .list-group-item {
       padding: 5px;
     }
-    .right-Link{
+
+    .right-Link {
       float: right;
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;

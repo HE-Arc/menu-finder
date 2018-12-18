@@ -24,7 +24,7 @@ class MenuController extends Controller
         $restaurant = $currentUser->restaurant;
         $menus = null;
         if (isset($restaurant)) {
-            $menus = $restaurant->menus;
+            $menus = $restaurant->menus->load('categories', 'dishes');
         }
         return view('menu.index')
             ->with(['menus' => $menus]);
@@ -37,9 +37,14 @@ class MenuController extends Controller
      */
     public function create()
     {
+
         $menu = new Menu();
         $categories = Category::all();
-
+        $restaurant = \Auth::user()->restaurant;
+        if ($restaurant == null) {
+            return redirect()
+                ->action('MenuController@index');
+        }
         return view('menu.create')
             ->with(['menu' => $menu,
                     'categories' => $categories]);
@@ -157,6 +162,7 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
+        // @todo Check that the user accessing the menu actually "owns" it
         $menu = Menu::find($id);
         $categories = Category::all();
 
@@ -174,6 +180,7 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // @todo Check that the user updating the menu actually "owns" it
         $request->merge([
             'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
@@ -192,7 +199,7 @@ class MenuController extends Controller
 
         try {
             //Now we delete every dish from the menu an create the new one
-            //Maybe check the one already existent to reduce call to db
+            //Maybe check the one already existent
             Dish::where('menu_id', $id)->delete();
 
             $currentUser = \Auth::user();
@@ -243,6 +250,7 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
+        // @todo Check that the user destroying the menu actually "owns" it
         try {
             $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
