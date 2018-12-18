@@ -68,6 +68,25 @@ class Restaurant extends Model
         return $this->hasMany('App\Menu');
     }
 
+    public function getLatAttribute()
+    {
+        return $this->location->getLat();
+    }
+
+    public function getLngAttribute()
+    {
+        return $this->location->getLng();
+    }
+
+    public function getRateAttribute()
+    {
+        if ($this->rate_nb > 0) {
+            return round($this->rate_sum / $this->rate_nb, 1);
+        } else {
+            return null;
+        }
+    }
+
     public function getAvatarUrlAttribute()
     {
         return asset('storage/avatars/' . $this->avatar);
