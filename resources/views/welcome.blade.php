@@ -8,7 +8,7 @@
             Restaurants
             <h2>Register and add your restaurant</h2>
         </div>
-
+{{--        {{ Could use asset() function }} --}}
         <img src="/asset/sharp-restaurant-24px.svg" class="rounded mx-auto d-block icon" alt="Restaurant">
     </div>
     <div class="content welcomeText">
@@ -26,6 +26,8 @@
         </div>
         <img src="/asset/baseline-android-24px.svg" class="rounded mx-auto d-block icon" alt="Menus">
     </div>
+
+    {{-- Could add REST API documentation link --}}
     <div class="content welcomeText">
         <div class="title m-b-md ">
             <a href="restaurants" class="linkStart"><button class="startBtn">Get started now!</button></a>
