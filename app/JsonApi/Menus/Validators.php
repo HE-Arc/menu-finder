@@ -19,6 +19,15 @@ class Validators extends AbstractValidators
     ];
 
     /**
+     * The allowed filtering parameters.
+     **
+     * @var string[]
+     */
+    protected $allowedFilteringParameters = [
+        'categories',
+    ];
+
+    /**
      * Get resource validation rules.
      *
      * @param mixed|null $record
@@ -43,6 +52,7 @@ class Validators extends AbstractValidators
             'lat' => 'numeric|required_with:lng,radius',
             'lng' => 'numeric|required_with:lat,radius',
             'radius' => 'numeric|required_with:lat,lng',
+            'filter.categories' => 'array|min:1',
         ];
     }
 }

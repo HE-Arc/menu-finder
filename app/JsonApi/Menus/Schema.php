@@ -20,7 +20,6 @@ class Schema extends SchemaProvider
     protected $relationships = [
         'restaurant',
         'categories',
-        'dishes',
     ];
 
     /**
@@ -83,5 +82,15 @@ class Schema extends SchemaProvider
                 },
             ],
         ];
+    }
+
+    /**
+     * Get schema default include paths.
+     *
+     * @return string[]
+     */
+    public function getIncludePaths()
+    {
+        return ['dishes'];
     }
 }

@@ -74,6 +74,15 @@ class Adapter extends AbstractAdapter
         $query->where('end', '>=', Carbon::today()->toDateString());
 
         /**
+         * Filters by categories (many-to-many relationship).
+         */
+        if ($categories = $filters->get('categories')) {
+            $query->whereHas('categories', function ($relation_query) use ($categories) {
+                $relation_query->whereIn('category_id', $categories);
+            });
+        }
+
+        /**
          * We can only check for the presence of one geospatial query attribute,
          * it is up to the validator to make sure that the others are given by the user
          * @see Validators::queryRules
