@@ -41,10 +41,10 @@ class MenuController extends Controller
         $menu = new Menu();
         $categories = Category::all();
         $restaurant = \Auth::user()->restaurant;
-         if($restaurant == null) {
-             return redirect()
-                 ->action('MenuController@index');
-                 }
+        if ($restaurant == null) {
+            return redirect()
+                ->action('MenuController@index');
+        }
         return view('menu.create')
             ->with(['menu' => $menu,
                     'categories' => $categories]);
