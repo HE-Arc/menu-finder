@@ -7,8 +7,14 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~croppie/croppie.css';
+@import '~bootstrap-select/sass/bootstrap-select';
 
 .navbar-laravel {
-  background-color: #fff;
+  background-color: $green;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+@import 'menu';
+@import 'restaurant';
+@import 'welcome';

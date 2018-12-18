@@ -16,4 +16,10 @@ use Tests\TestCase as BaseTestCase;
 abstract class JsonApiTestCase extends BaseTestCase
 {
     use MakesJsonApiRequests;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->seed('TestingDatabaseSeeder');
+    }
 }

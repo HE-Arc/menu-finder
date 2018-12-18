@@ -26,6 +26,7 @@ class Restaurant extends Model
         'city',
         'avatar',
         'description',
+        'website',
     ];
 
     /**
@@ -86,9 +87,8 @@ class Restaurant extends Model
         }
     }
 
-    public function getAvatarAttribute($value)
+    public function getAvatarUrlAttribute()
     {
-        // @todo Return storage path
-        return $value;
+        return asset('storage/avatars/' . $this->avatar);
     }
 }
