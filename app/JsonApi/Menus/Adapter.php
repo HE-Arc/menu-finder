@@ -74,6 +74,12 @@ class Adapter extends AbstractAdapter
         $query->where('end', '>=', Carbon::today()->toDateString());
 
         /**
+         * By default, we only return the 50 first matches
+         * @todo Implement pagination
+         */
+        $query->limit(50);
+
+        /**
          * Filters by categories (many-to-many relationship).
          */
         if ($categories = $filters->get('categories')) {
