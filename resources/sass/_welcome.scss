@@ -85,26 +85,28 @@ body.homepage {
   }
 
   .startBtn {
-    background-color: rgba(110, 110, 110, 0.4);
-    //border: none;
-    border: 5px solid rgba(57, 57, 57, 1);
-    color: white;
+    background-color: rgba(110, 110, 110, 0);
+    border: 5px solid rgba(64, 113, 71, 1);
     padding: 12px 16px;
-    //opacity: 0.8;
     border-radius: 25px;
     cursor: pointer;
   }
 
   .startBtn:hover {
-    background-color: rgba(64, 113, 71, 0.8);
-
+    background-color: rgba(64, 113, 71, 0.9);
+    .linkStart
+    {
+      color: white !important;
+    }
   }
 
   .linkStart {
     color: black;
     text-decoration: none;
+  }
 
-
+  .linkStart:hover {
+    color:white;
   }
 
   @media screen and (max-width: 640px) {
