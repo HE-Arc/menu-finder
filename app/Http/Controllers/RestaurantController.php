@@ -127,6 +127,7 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // @todo Check that the user updating the restaurant actually "owns" it
         $location = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
         $this->validate($request, [
           'name' => 'required|string',

@@ -28,7 +28,7 @@
     </div>
     <div class="content welcomeText">
         <div class="title m-b-md ">
-            <button class="startBtn"><a href="restaurants" class="linkStart">Get started now!</a></button>
+            <a href="restaurants" class="linkStart"><button class="startBtn">Get started now!</button></a>
         </div>
     </div>
 </div>

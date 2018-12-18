@@ -162,6 +162,7 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
+        // @todo Check that the user accessing the menu actually "owns" it
         $menu = Menu::find($id);
         $categories = Category::all();
 
@@ -179,6 +180,7 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // @todo Check that the user updating the menu actually "owns" it
         $request->merge([
             'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
@@ -248,6 +250,7 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
+        // @todo Check that the user destroying the menu actually "owns" it
         try {
             $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
