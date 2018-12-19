@@ -159,7 +159,7 @@
 
         <div class="form-group row">
             {!! Form::label('price', 'Price ', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
-            {!! Form::number('price', old('price'), ['class' => 'form-control col-sm-10', 'required' => 'required']) !!}
+            {!! Form::number('price', old('price'), ['class' => 'form-control col-sm-10', 'required' => 'required', 'step' => '0.05', 'min' => '0.05']) !!}
         </div>
         @if(isset($menu->id))
             {!! Form::submit('Update', ['class' => 'btn btn-primary btnSubmit btn-lg btnSubmit', 'id' => 'send_button']) !!}
