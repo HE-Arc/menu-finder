@@ -40,7 +40,7 @@ class Schema extends SchemaProvider
             'address' => $resource->address,
             'zip' => $resource->zip,
             'city' => $resource->city,
-            'avatar' => $resource->avatar,
+            'avatar' => $resource->avatar_url,
             'website' => $resource->website,
             'description' => $resource->description,
         ];

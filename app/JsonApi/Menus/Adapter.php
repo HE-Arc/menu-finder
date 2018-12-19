@@ -83,6 +83,9 @@ class Adapter extends AbstractAdapter
          * Filters by categories (many-to-many relationship).
          */
         if ($categories = $filters->get('categories')) {
+            // filter.categories is a comma separated list of category IDs
+            $categories = explode(',', $categories);
+
             $query->whereHas('categories', function ($relation_query) use ($categories) {
                 $relation_query->whereIn('category_id', $categories);
             });

@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Menus;
 
+use App\Rules\CommaSeparatedIntegers;
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
@@ -52,7 +53,7 @@ class Validators extends AbstractValidators
             'lat' => 'numeric|required_with:lng,radius',
             'lng' => 'numeric|required_with:lat,radius',
             'radius' => 'numeric|required_with:lat,lng',
-            'filter.categories' => 'array|min:1',
+            'filter.categories' => new CommaSeparatedIntegers,
         ];
     }
 }
