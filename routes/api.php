@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 
 JsonApi::register('beta', ['namespace' => 'Api'], function ($api, $router) {
     $api->resource('categories', [
+        // Only GET method (index and specific model)
         'only' => ['index', 'read'],
     ]);
 
@@ -25,7 +26,13 @@ JsonApi::register('beta', ['namespace' => 'Api'], function ($api, $router) {
 
     $api->resource('menus', [
         'only' => ['index', 'read'],
-        'has-one' => 'restaurant',
-        'has-many' => ['categories', 'dishes'],
+        // Only register related route (i.e. GET /menus/{ID}/restaurant)
+        'has-one' => [
+            'restaurant' => ['only' => 'related'],
+        ],
+        // Only register related route (i.e. GET /menus/{ID}/categories)
+        'has-many' => [
+            'categories' => ['only' => 'related'],
+        ],
     ]);
 });
