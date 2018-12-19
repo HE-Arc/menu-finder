@@ -37,7 +37,6 @@ class MenuController extends Controller
      */
     public function create()
     {
-
         $menu = new Menu();
         $categories = Category::all();
         $restaurant = \Auth::user()->restaurant;
@@ -162,8 +161,18 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        // @todo Check that the user accessing the menu actually "owns" it
         $menu = Menu::find($id);
+//        $currentUser = \Auth::user();
+//        $userRestaurant = $currentUser->restaurant;
+//        $restaurant = $menu->restaurant;
+//        if($userRestaurant != $restaurant)
+//        {
+//            $errorMessage = 'You cannot modify a menu that don\'t belong to you';
+//            return redirect()
+//                ->action('MenuController@index')
+//                ->withErrors($errorMessage);
+//        }
+
         $categories = Category::all();
 
         return view('menu.create')
@@ -180,7 +189,17 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // @todo Check that the user updating the menu actually "owns" it
+        $currentUser = \Auth::user();
+        $userRestaurant = $currentUser->restaurant;
+        $menu = Menu::find($id);
+        $restaurant = $menu->restaurant;
+
+        if ($userRestaurant != $restaurant) {
+            $errorMessage = 'You cannot modify a menu that don\'t belong to you';
+            return redirect()
+                ->action('MenuController@index')
+                ->withErrors($errorMessage);
+        }
         $request->merge([
             'starter' => array_filter($request->input('starter'), array($this, 'filterArrayNullValue')),
             'dish' => array_filter($request->input('dish'), array($this, 'filterArrayNullValue')),
@@ -202,14 +221,10 @@ class MenuController extends Controller
             //Maybe check the one already existent
             Dish::where('menu_id', $id)->delete();
 
-            $currentUser = \Auth::user();
-
             $categoriesId = null;
             if (isset($validatedData['categories'])) {
                 $categoriesId = array_map('intval', $validatedData['categories']);
             }
-
-            $menu = Menu::find($id);
             $menu->update([
                 'name' => $validatedData['name'],
                 'price' => $validatedData['price'],
@@ -250,9 +265,19 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        // @todo Check that the user destroying the menu actually "owns" it
+        $currentUser = \Auth::user();
+        $userRestaurant = $currentUser->restaurant;
+        $menu = Menu::find($id);
+        $restaurant = $menu->restaurant;
+
+        if ($userRestaurant != $restaurant) {
+            $errorMessage = 'You cannot delete a menu that don\'t belong to you';
+            return redirect()
+                ->action('MenuController@index')
+                ->withErrors($errorMessage);
+        }
+
         try {
-            $menu = Menu::find($id);
             $message = 'The menu ' . $menu->name . ' has been deleted!';
             $menu->categories()->detach();
             $menu->delete();

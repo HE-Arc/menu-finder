@@ -34,11 +34,11 @@ class Menu extends Model
 
     public function getStartFormatAttribute()
     {
-        return \Carbon\Carbon::parse($this->attributes['start'])->format('d-m-Y');
+        return Carbon::parse($this->attributes['start'])->format('d-m-Y');
     }
     public function getEndFormatAttribute()
     {
-        return \Carbon\Carbon::parse($this->attributes['end'])->format('d-m-Y');
+        return Carbon::parse($this->attributes['end'])->format('d-m-Y');
     }
 
     public function dishes()

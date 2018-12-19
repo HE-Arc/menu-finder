@@ -49,13 +49,21 @@ class RestaurantController extends Controller
             'website' => 'sometimes|string'
         ]);
 
-        $result = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+        $location = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+
+        if (is_null($location)) {
+            $errorMessage = 'Location not found please verify the address';
+            return redirect()
+                ->action('RestaurantController@index')
+                ->withInput()
+                ->withErrors(['errorInfo' => $errorMessage]);
+        }
 
         $restaurant = null;
         try {
             $restaurant = Restaurant::create([
                 'name' => $request->name,
-                'location' => new Point($result->getLatitude(), $result->getLongitude()),
+                'location' => new Point($location->getLatitude(), $location->getLongitude()),
                 'address' => $request->address,
                 'city' => $request->city,
                 'zip' => $request->zip,
@@ -127,8 +135,16 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // @todo Check that the user updating the restaurant actually "owns" it
-        $location = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+        $currentUser = \Auth::user();
+        $userRestaurant = $currentUser->restaurant;
+        $restaurant = Restaurant::find($id);
+        if ($userRestaurant != $restaurant) {
+            $errorMessage = 'You cannot delete a menu that don\'t belong to you';
+            return redirect()
+                ->action('RestaurantController@index')
+                ->withErrors($errorMessage);
+        }
+
         $this->validate($request, [
           'name' => 'required|string',
           'address' => 'required|string',
@@ -138,9 +154,17 @@ class RestaurantController extends Controller
           'website' => 'sometimes|string'
         ]);
 
-        $restaurant = null;
+        $location = $this->getCoordinateFromAddress($request->address." ".$request->zip." ".$request->city);
+
+        if (is_null($location)) {
+            $errorMessage = 'Location not found please verify the address';
+            return redirect()
+                ->action('RestaurantController@index')
+                ->withInput()
+                ->withErrors(['errorInfo' => $errorMessage]);
+        }
+
         try {
-            $restaurant = Restaurant::find($id);
             $restaurant->update([
               'name' => $request->name,
               'location' => new Point($location->getLatitude(), $location->getLongitude()),
@@ -173,14 +197,17 @@ class RestaurantController extends Controller
               ->withErrors(['errorInfo' => $errorMessage]);
         }
     }
-
     public function getCoordinateFromAddress($address)
     {
         $httpClient = new \Http\Adapter\Guzzle6\Client();
         $provider = new \Geocoder\Provider\AlgoliaPlaces\AlgoliaPlaces($httpClient, env("ALGOLIA_GEOCODE_API_KEY"), env("ALGOLIA_GEOCODE_APP_ID"));
         $geocoder = new \Geocoder\StatefulGeocoder($provider, 'en');
-        $result = $geocoder->geocodeQuery(GeocodeQuery::create($address));
+        $location = $geocoder->geocodeQuery(GeocodeQuery::create($address));
 
-        return $result->get(0)->getCoordinates();
+        if ($location->count() > 0) {
+            return $location->get(0)->getCoordinates();
+        } else {
+            return null;
+        }
     }
 }

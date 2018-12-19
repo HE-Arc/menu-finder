@@ -37,8 +37,8 @@
         </div>
 
         @php
-            $startDate = isset($menu) && $menu->start ? date($menu->start) : \Carbon\Carbon::now();
-            $endDate = isset($menu) && $menu->end ? date($menu->end) : \Carbon\Carbon::now();
+            $startDate = isset($menu) && isset($menu->start) ? date_format($menu->start,'Y-m-d') : \Carbon\Carbon::now();
+            $endDate = isset($menu) && isset($menu->end) ? date_format($menu->end,'Y-m-d') : \Carbon\Carbon::now();
         @endphp
         <div class="form-group row">
             {!! Form::label('start', 'Start date', ['class' => 'col-sm-2 col-form-label col-form-label-lg']) !!}
