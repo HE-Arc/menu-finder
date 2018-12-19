@@ -18,10 +18,9 @@ class CommaSeparatedIntegers implements Rule
         // Comma separated values to array
         $relation_ids = explode(',', $value);
 
-        foreach($relation_ids as $id)
-        {
+        foreach ($relation_ids as $id) {
             // Each element should be a valid integer
-            if(!filter_var($id, FILTER_VALIDATE_INT)) {
+            if (!filter_var($id, FILTER_VALIDATE_INT)) {
                 return false;
             }
         }

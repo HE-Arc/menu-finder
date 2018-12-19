@@ -62,7 +62,7 @@ class RestaurantApiTest extends JsonApiTestCase
                 'address' => $restaurant->address,
                 'zip' => $restaurant->zip,
                 'city' => $restaurant->city,
-                'avatar' => $restaurant->avatar,
+                'avatar' => $restaurant->avatar_url,
                 'website' => $restaurant->website,
                 'description' => $restaurant->description,
             ],
